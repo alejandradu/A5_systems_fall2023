@@ -32,7 +32,6 @@ int main(void)
 wcLoop:
     if ((iChar = getchar()) == EOF) goto wcLoopEnd;
   
-   
     lCharCount++;
 
     if (!isspace(iChar)) goto else1;
@@ -58,7 +57,7 @@ wcLoop:
        lLineCount++;
     endif3:
 
-   
+   goto wcLoop;
 wcLoopEnd:
 
    if (!iInWord) goto endif4;
