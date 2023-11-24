@@ -35,7 +35,7 @@ wcLoop:
    
     lCharCount++;
 
-    if (！isspace(iChar)) goto else1;
+    if (!isspace(iChar)) goto else1;
     
        if (!iInWord) goto ifWordEnd;
        
