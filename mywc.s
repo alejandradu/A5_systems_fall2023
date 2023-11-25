@@ -78,7 +78,7 @@ wcLoop:
 
 
     // if (!isspace(iChar)) goto else1;
-    add x1, iChar
+    adr x1, iChar
     ldr w0, [x1]
     bl isspace
     cmp w0, 0
@@ -160,4 +160,4 @@ wcLoop:
         add     sp, sp, MAIN_STACK_BYTECOUNT
         ret
 
-        .size   main, (. - main)
+    .size   main, (. - main)
