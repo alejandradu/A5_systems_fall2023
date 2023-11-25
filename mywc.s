@@ -143,6 +143,8 @@ wcLoop:
     cmp w1, 0
     beq endif4
 
+    endif4:
+
     // printf("%7ld %7ld %7ld\n", lLineCount, lWordCount, lCharCount);
 
     adr x0, printfFormatStr
