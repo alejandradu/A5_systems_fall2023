@@ -5,7 +5,7 @@
 
 .equ  FALSE, 0
 .equ TRUE, 1
-.equ EOF, 4294967295
+.equ EOF, -1
 
 //--------------------------------------------------------------------
 
@@ -65,9 +65,9 @@ wcLoop:
     // iChar = getchar() (getChar returns to w0)
     adr x1, iChar
     bl  getchar
-    str w0, [x1]
+    str x0, [x1]
     // (assuming iChar is unsigned) 
-    cmp w0, EOF
+    cmp x0, EOF
     beq wcLoopEnd
 
     // lCharCount++; 
