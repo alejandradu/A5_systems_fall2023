@@ -63,9 +63,9 @@ main:
 wcLoop:
     // if ((iChar = getchar()) == EOF) goto wcLoopEnd;
     // iChar = getchar() (getChar returns to w0)
-    adr w1, iChar
+    adr x1, iChar
     bl  getchar
-    str w0, [w1]
+    str w0, [x1]
     // (assuming iChar is unsigned) 
     cmp w0, EOF
     beq wcLoopEnd
@@ -78,7 +78,8 @@ wcLoop:
 
 
     // if (!isspace(iChar)) goto else1;
-    ldr w0, [w1]
+    add x1, iChar
+    ldr w0, [x1]
     bl isspace
     cmp w0, 0
     beq else1
@@ -90,9 +91,9 @@ wcLoop:
     str x1, [x0]
 
     //iInWord = FALSE
-    adr w0, iInWord
+    adr x0, iInWord
     mov w1, FALSE
-    str w1, [w0]
+    str w1, [x0]
 
     ifWordEnd:
 
@@ -102,25 +103,25 @@ wcLoop:
     else1:
 
     // if (iInWord)
-    adr w0, iInWord
-    ldr w0, [w0]
-    cmp w0, 0
+    adr x0, iInWord
+    ldr w1, [x0]
+    cmp w1, 0
     // goto endif2
     bne endif2
 
     // iInWord = TRUE;
-    adr w0, iInWord
+    adr x0, iInWord
     mov w1, TRUE
-    str w1, [w0]
+    str w1, [x0]
 
     endif2:
 
     endif1:
 
     //if (!(iChar == '\n')) goto endif3
-    adr w0, iChar
-    ldr w0, [w0]
-    cmp w0, 10
+    adr x0, iChar
+    ldr w1, [x0]
+    cmp w1, 10
     bne endif3
 
     //    lLineCount++;
@@ -137,9 +138,9 @@ wcLoop:
     wcLoopEnd:
 
     // if (!iInWord) goto endif4;
-    adr w0, iInWord
-    ldr w0, [w0]
-    cmp w0, 0
+    adr x0, iInWord
+    ldr w1, [x0]
+    cmp w1, 0
     beq endif4
 
     // printf("%7ld %7ld %7ld\n", lLineCount, lWordCount, lCharCount);
