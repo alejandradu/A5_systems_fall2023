@@ -108,7 +108,7 @@ wcLoop:
     // if (iInWord)
     adr x0, iInWord
     ldr w1, [x0]
-    cmp w1, TRUE
+    cmp w1, FALSE
     // goto endif2
     bne endif2
 
