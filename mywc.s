@@ -5,7 +5,7 @@
 
 .equ  FALSE, 0
 .equ TRUE, 1
-.equ EOF, -1
+.equ EOF, 4,294,967,295
 
 //--------------------------------------------------------------------
 
@@ -58,6 +58,7 @@ main:
         sub     sp, sp, MAIN_STACK_BYTECOUNT
         str     x30, [sp]
 
+// w1 --> iChar, x2-->lcharCount (), x3 -> lWordCount, W5 ->iInWord
 
 wcLoop:
     // if ((iChar = getchar()) == EOF) goto wcLoopEnd;
@@ -75,18 +76,13 @@ wcLoop:
     add x1, x1, 1
     str x1, [x0]
 
+
     // if (!isspace(iChar)) goto else1;
     adr x1, iChar
     ldr w0, [x1]
     bl isspace
-    cmp w0, FALSE
+    cmp w0, 0
     beq else1
-
-    // if (!iInWord) goto ifWordEnd;
-    adr x1, iInWord
-    ldr w0, [x1]
-    cmp w0, FALSE
-    beq ifWordEnd
 
     //lWordCount++
     adr x0, lWordCount
@@ -109,7 +105,7 @@ wcLoop:
     // if (iInWord)
     adr x0, iInWord
     ldr w1, [x0]
-    cmp w1, FALSE
+    cmp w1, 0
     // goto endif2
     bne endif2
 
@@ -144,7 +140,7 @@ wcLoop:
     // if (!iInWord) goto endif4;
     adr x0, iInWord
     ldr w1, [x0]
-    cmp w1, FALSE
+    cmp w1, 0
     beq endif4
 
     endif4:
@@ -160,10 +156,10 @@ wcLoop:
     ldr x3, [x3]
     bl  printf
 
-    // Epilog and return 0
-    mov     w0, 0
-    ldr     x30, [sp]
-    add     sp, sp, MAIN_STACK_BYTECOUNT
-    ret
+     // Epilog and return 0
+        mov     w0, 0
+        ldr     x30, [sp]
+        add     sp, sp, MAIN_STACK_BYTECOUNT
+        ret
 
     .size   main, (. - main)
