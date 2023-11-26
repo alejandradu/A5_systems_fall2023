@@ -156,10 +156,10 @@ wcLoop:
     ldr x3, [x3]
     bl  printf
 
-     // Epilog and return 0
-        mov     w0, 0
-        ldr     x30, [sp]
-        add     sp, sp, MAIN_STACK_BYTECOUNT
-        ret
+    // Epilog and return 0
+    mov     w0, 0
+    ldr     x30, [sp]
+    add     sp, sp, MAIN_STACK_BYTECOUNT
+    ret
 
     .size   main, (. - main)
