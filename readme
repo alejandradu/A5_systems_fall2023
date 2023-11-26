@@ -78,7 +78,27 @@ particular, what bugs are in your submission?
 ------------------------------------------------------------------------
 What is your mywc program test plan?
 
+Boundary tests:
 
+mywcbound1.txt: An empty text file, testing the edge case where there are no lines, characters, or words. Correct output should be 0 for all.
+
+mywcbound2.txt: A text file with only one newline character. Tests edge case where there are chars and newlines but not visibly. Correct output should be: 1 char, 0 words, 1 line.
+
+mywcbound3.txt: A text file with only one char and no newline characters. Tests the edge case where there is a visble char but no line should be detected. Correct output should be: 1 char, 0 words, 0 lines.
+
+mywcbound4.txt: A text file with one word and no newline characters. Tests the edge case where there is a visible word but no line should be deteted. Correct output should be: 4 chars, 1 words, 0 lines.
+
+mywcbound5.txt: A text file with only one whitespace. Tests the edge case where there are chars but not visibly, related to mywcbound2.txt. Correct output should be: 1 char, 0 words, 0 lines.
+
+mywcbound6.txt: A text file with only chars. Tests edge case where there are no consecutive visible chars (no words). Correct output should be: 5 chars, 0 word,s 0 lines.
+
+mywcbound7.txt: A text file with only words (and chars). Tests edge case where all visible chars have another consecutive one. Correct output should be: 14 chars, 3 words, 0 lines.
+
+Stress tests: 
+
+mywcstress1.txt: A 50000-character (506-line) text file with random ASCII characters 09, 0A, and in the range 20 - 7E (inclusive). The probability of inclusion of any of these characters at any point is uniform, so this tests the program's ability to handle very large text with purely random input.
+
+mywcstress2.txt: A 983-line (3500 - character) text file with random ASCII characters 09, 0A, and in the range 20 - 7E (inclusive). This tests the program's ability to handle very long (many lines) text with purely random input.
 
 ------------------------------------------------------------------------
 What are the CPU times consumed by the programs from Parts 2a, 2b, 2d,
