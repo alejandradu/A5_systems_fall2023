@@ -78,6 +78,23 @@ particular, what bugs are in your submission?
 ------------------------------------------------------------------------
 What is your mywc program test plan?
 
+Statement tests (lines are referenced on the c program):
+
+mywcstate1.txt: containing only normal characters in one word, no space, no new line characters, tests statement on line 32 & line 53 
+
+mywcstate2.txt: containing only one word and a space, with no
+new line characters, tests statement on line 32, line 38, line 39 (but not line 53) 
+
+mywcstate3.txt: containing two words with no space after them and no new line characters, tests statement on line 38-39, line 45, line 32, line 53
+
+mywcstate4.txt: containing two words with a space after them,
+tests statement on line 38-39, line 45, line 32 (but not line 53) 
+
+mywcstate5.txt: containing one word with a new line character in the end, tests statement on line 49, line 32, line 53
+
+mywcstate6.txt: containing several words with a new line character in the end, but no space in the end, tests statement on line 49, line 53, line 32, line 38-39, line 45
+
+mywcstate7.txt: containing several words with a space in the end and two new line characters afterwards. tests statement on line 49, line45, line 38-39, line 32, (but not line 53)
 
 
 ------------------------------------------------------------------------
