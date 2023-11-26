@@ -65,9 +65,9 @@ wcLoop:
     // iChar = getchar() (getChar returns to w0)
     adr x1, iChar
     bl  getchar
-    str x0, [x1]
+    str w0, [x1]
     // (assuming iChar is unsigned) 
-    cmp x0, EOF
+    cmp w0, EOF
     beq wcLoopEnd
 
     // lCharCount++; 
