@@ -65,6 +65,7 @@ wcLoop:
     adr x1, iChar
     bl  getchar
     str w0, [x1]
+    ldr w0, [x1]
     cmp w0, EOF
     beq wcLoopEnd
 
