@@ -35,7 +35,7 @@ iInWord:
 
     .section  .bss
 iChar:
-    .skip   4
+    .skip   8
 
 //--------------------------------------------------------------------
 
@@ -65,9 +65,9 @@ wcLoop:
     // iChar = getchar() (getChar returns to w0)
     adr x1, iChar
     bl  getchar
-    str w0, [x1]
+    str x0, [x1]
     // (assuming iChar is unsigned) 
-    cmp w0, EOF
+    cmp x0, EOF
     beq wcLoopEnd
 
     // lCharCount++; 
@@ -79,9 +79,9 @@ wcLoop:
 
     // if (!isspace(iChar)) goto else1;
     adr x1, iChar
-    ldr w0, [x1]
+    ldr x0, [x1]
     bl isspace
-    cmp w0, 0
+    cmp x0, 0
     beq else1
 
     //lWordCount++
@@ -120,8 +120,8 @@ wcLoop:
 
     //if (!(iChar == '\n')) goto endif3
     adr x0, iChar
-    ldr w1, [x0]
-    cmp w1, 10
+    ldr x1, [x0]
+    cmp x1, 10
     bne endif3
 
     //    lLineCount++;
