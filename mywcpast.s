@@ -58,18 +58,16 @@ main:
         sub     sp, sp, MAIN_STACK_BYTECOUNT
         str     x30, [sp]
 
-// w2 --> iChar, x2-->lcharCount (), x3 -> lWordCount, W5 ->iInWord
+// w1 --> iChar, x2-->lcharCount (), x3 -> lWordCount, W5 ->iInWord
 
 wcLoop:
     // if ((iChar = getchar()) == EOF) goto wcLoopEnd;
     // iChar = getchar() (getChar returns to w0)
-
     adr x1, iChar
     bl  getchar
-    ldr w2 [x0]   // get char stored in pointer x0
-    str w2, [x1]
-    // ldr w0, [x1]
-    cmp w2, EOF
+    str w0, [x1]
+    ldr w0, [x1]
+    cmp w0, EOF
     beq wcLoopEnd
 
     // lCharCount++; 
