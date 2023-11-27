@@ -5,7 +5,7 @@
 
 .equ  FALSE, 0
 .equ TRUE, 1
-.equ EOF, 4,294,967,295
+.equ EOF -1
 
 //--------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ wcLoop:
 
     adr x1, iChar
     bl  getchar
-    ldr w2 [x0]   // get char stored in pointer x0
+    ldr w2, [x0]   // get char stored in pointer x0
     str w2, [x1]
     // ldr w0, [x1]
     cmp w2, EOF
