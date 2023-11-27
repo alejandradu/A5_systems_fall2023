@@ -85,6 +85,12 @@ wcLoop:
     cmp w0, 0
     beq else1
 
+    // if (!iInWord) goto ifWordEnd;
+    adr x0, iInWord
+    ldr w1, [x0]
+    cmp w1, 0
+    beq ifWordEnd
+
     //lWordCount++
     adr x0, lWordCount
     ldr x1, [x0]
