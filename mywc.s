@@ -63,7 +63,8 @@ main:
 wcLoop:
     // if ((iChar = getchar()) == EOF) goto wcLoopEnd;
     // iChar = getchar() (getChar returns to w0)
-    // adr x1, iChar
+
+    adr x1, iChar
     bl  getchar
     str w0, [x1]
     ldr w0, [x1]
@@ -143,6 +144,12 @@ wcLoop:
     cmp w1, 0
     beq endif4
 
+    //lWordCount++
+    adr x0, lWordCount
+    ldr x1, [x0]
+    add x1, x1, 1
+    str x1, [x0]
+
     endif4:
 
     // printf("%7ld %7ld %7ld\n", lLineCount, lWordCount, lCharCount);
@@ -163,4 +170,3 @@ wcLoop:
         ret
 
     .size   main, (. - main)
-    
