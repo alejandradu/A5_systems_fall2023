@@ -5,7 +5,7 @@
 
 .equ  FALSE, 0
 .equ TRUE, 1
-.equ EOF, -1
+.equ EOF, 4,294,967,295
 
 //--------------------------------------------------------------------
 
@@ -64,7 +64,9 @@ wcLoop:
     // if ((iChar = getchar()) == EOF) goto wcLoopEnd;
     // iChar = getchar() (getChar returns to w0)
     adr x1, iChar
+    bl  getchar
     str w0, [x1]
+    ldr w0, [x1]
     cmp w0, EOF
     beq wcLoopEnd
 
@@ -81,12 +83,6 @@ wcLoop:
     bl isspace
     cmp w0, 0
     beq else1
-
-    // if (!iInWord) goto ifWordEnd;
-    adr x0, iInWord
-    ldr w1, [x0]
-    cmp w1, 0
-    beq ifWordEnd
 
     //lWordCount++
     adr x0, lWordCount
@@ -146,12 +142,6 @@ wcLoop:
     ldr w1, [x0]
     cmp w1, 0
     beq endif4
-
-    //lWordCount++
-    adr x0, lWordCount
-    ldr x1, [x0]
-    add x1, x1, 1
-    str x1, [x0]
 
     endif4:
 
