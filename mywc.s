@@ -62,10 +62,9 @@ main:
 wcLoop:
     // if ((iChar = getchar()) == EOF) goto wcLoopEnd;
     // iChar = getchar() (getChar returns to w0)
-    adr x1, iChar
     bl  getchar
+    adr x1, iChar
     str w0, [x1]
-    ldr w0, [x1]
     cmp w0, EOF
     beq wcLoopEnd
 
