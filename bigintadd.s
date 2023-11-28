@@ -306,6 +306,9 @@ BigInt_add:
     ldr x1, [sp, OSUM]
     str x0, [x1]
 
+    // or should I put
+    // str x0, [sp, OSUM]
+
     // return TRUE;
     // Epilog and return lLarger
         // the callee should save the return value in x0
