@@ -186,7 +186,15 @@ BigInt_add:
     add x2, x2, x0
     str x2, [sp, ULSUM]
 
-    //if (ulSum >= oAddend1->aulDigits[lIndex]) goto endif3;
+    // if (ulSum >= oAddend1->aulDigits[lIndex]) goto endif3;
+    ldr x0, [sp, OADDEND1]
+    add x0, x0, AULDIGITS
+    ldr x1, [sp, LINDEX]
+    lsl x1, x1, 3
+    add x0, x0, x1
+    ldr x0, [x0]  // x0 is the value of oAddend1->aulDigits[lIndex]
+    ldr x2, [sp, ULSUM]
+    // ideas for optimization: get rid of the above
     // x0 is still oAddend1->aulDigits[lIndex]
     // x2 is still ulSum
     cmp x2, x0
@@ -213,6 +221,14 @@ BigInt_add:
     str x2, [sp, ULSUM]
 
     // if (ulSum >= oAddend2->aulDigits[lIndex]) goto endif4;
+    ldr x0, [sp, OADDEND2]
+    add x0, x0, AULDIGITS
+    ldr x1, [sp, LINDEX]
+    lsl x1, x1, 3
+    add x0, x0, x1
+    ldr x0, [x0]  // x0 is the value of oAddend2->aulDigits[lIndex]
+    ldr x2, [sp, ULSUM]
+    // idea for optimization: get rid of the above
     // x0 is still oAddend2->aulDigits[lIndex]
     // x2 is still ulSum
     cmp x2, x0
@@ -302,11 +318,11 @@ BigInt_add:
 
     // oSum->lLength = lSumLength;
     ldr x0, [sp, LSUMLENGTH]
-    // this might be wrong:
+    // !!!!! this following is right
     ldr x1, [sp, OSUM]
     str x0, [x1]
 
-    // or should I put
+    // this one is wrong: (eventhough I don't know why that's the case)
     // str x0, [sp, OSUM]
 
     // return TRUE;
