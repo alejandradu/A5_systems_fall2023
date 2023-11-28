@@ -122,7 +122,7 @@ BigInt_add:
     // lSumLength = BigInt_larger(oAddend1->lLength, oAddend2->lLength);
     ldr x0, [sp,OADDEND1]
     ldr x0, [x0]
-    ldr x1, [sp, OADDEND22]
+    ldr x1, [sp, OADDEND2]
     ldr x1, [x0]
     bl  BigInt_larger
     str x0, [sp, LSUMLENGTH]
@@ -210,8 +210,13 @@ BigInt_add:
 
     // oSum->aulDigits[lIndex] = ulSum;
     ldr x0, [sp, ULSUM]
-    // not sure if the following works
-    str x0, [sp, OSUM, AULDIGITS, LINDEX, lsl 3]
+    ldr x1, [sp, OSUM]
+    ldr x1, [x1, AULDIGITS]
+    mov x2, LINDEX
+    lsl x2, 3
+    ldr x1, [x1, x2]
+    str x0, [sp, x1]
+    // idea for optimization:  str x0, [sp, OSUM, AULDIGITS, LINDEX, lsl 3]
 
     // lIndex++;
     ldr x0, [sp, LINDEX]
@@ -251,7 +256,13 @@ BigInt_add:
     // oSum->aulDigits[lSumLength] = 1;
     mov x0, 1
     // not sure if the following line works
-    str x0, [sp, OSUM, AULDIGITS, LSUMLENGTH, lsl 3]
+    ldr x0, [sp, ULSUM]
+    ldr x1, [sp, OSUM]
+    ldr x1, [x1, AULDIGITS]
+    mov x2, LINDEX
+    lsl x2, 3
+    ldr x1, [x1, x2]
+    str x0, [sp, x1]
 
     // lSumLength++;
     ldr x0, [sp, LSUMLENGTH]
