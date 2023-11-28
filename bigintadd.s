@@ -220,6 +220,7 @@ BigInt_add:
 
     endif4:
 
+    // definitely something wrong here
     // oSum->aulDigits[lIndex] = ulSum;
     ldr x0, [sp, ULSUM]
     ldr x1, [sp, OSUM]
@@ -267,6 +268,7 @@ BigInt_add:
 
     endif6:
 
+    // definitely something wrong here
     // oSum->aulDigits[lSumLength] = 1;
     mov x0, 1
     ldr x1, [sp, OSUM]
