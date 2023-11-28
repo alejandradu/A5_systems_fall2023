@@ -213,7 +213,7 @@ BigInt_add:
     ldr x1, [sp, OSUM]
     ldr x1, [x1, AULDIGITS]
     mov x2, LINDEX
-    lsl x2, 3
+    lsl x2, x2, 3
     ldr x1, [x1, x2]
     str x0, [sp, x1]
     // idea for optimization:  str x0, [sp, OSUM, AULDIGITS, LINDEX, lsl 3]
@@ -260,7 +260,7 @@ BigInt_add:
     ldr x1, [sp, OSUM]
     ldr x1, [x1, AULDIGITS]
     mov x2, LINDEX
-    lsl x2, 3
+    lsl x2, x2, 3
     ldr x1, [x1, x2]
     str x0, [sp, x1]
 
