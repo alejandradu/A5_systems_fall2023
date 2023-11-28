@@ -112,7 +112,7 @@ BigInt_add:
     str x30, [sp]
     str x0, [sp, OADDEND1]
     str x1, [sp, OADDEND2]
-    str x3, [sp, OSUM]
+    str x2, [sp, OSUM]
 
     // unsigned long ulCarry;
     // unsigned long ulSum;
