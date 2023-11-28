@@ -278,7 +278,7 @@ BigInt_add:
     ldr x1, [sp, OSUM]
     add x1, x1, AULDIGITS
     // ldr x1, [x1, AULDIGITS]
-    ldr x2, [sp, LINDEX]
+    ldr x2, [sp, LSUMLENGTH]
     lsl x2, x2, 3
     add x1, x1, x2
     // ldr x1, [x1, x2]
