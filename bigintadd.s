@@ -123,7 +123,7 @@ BigInt_add:
     ldr x0, [sp,OADDEND1]
     ldr x0, [x0]
     ldr x1, [sp, OADDEND2]
-    ldr x1, [x0]
+    ldr x1, [x1]
     bl  BigInt_larger
     str x0, [sp, LSUMLENGTH]
 
