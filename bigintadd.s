@@ -178,6 +178,7 @@ BigInt_add:
     ldr x1, [sp, LINDEX]
     lsl x1, x1, 3
     add x0, x0, x1
+    ldr x0, [x0]
     // ldr x0, [x0, AULDIGITS]
     // ldr x1, [sp, LINDEX]
     // ldr x0, [x0, x1, lsl 3]
@@ -203,6 +204,7 @@ BigInt_add:
     ldr x1, [sp, LINDEX]
     lsl x1, x1, 3
     add x0, x0, x1
+    ldr x0, [x0]
     // ldr x0, [x0, AULDIGITS]
     // ldr x1, [sp, LINDEX]
     // ldr x0, [x0, x1, lsl 3]
@@ -222,7 +224,7 @@ BigInt_add:
 
     endif4:
 
-    // definitely something wrong here
+    // probably nothing wrong here
     // oSum->aulDigits[lIndex] = ulSum;
     ldr x0, [sp, ULSUM]
     ldr x1, [sp, OSUM]
