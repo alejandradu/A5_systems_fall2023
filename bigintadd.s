@@ -302,7 +302,9 @@ BigInt_add:
 
     // oSum->lLength = lSumLength;
     ldr x0, [sp, LSUMLENGTH]
-    str x0, [sp, OSUM]
+    // this might be wrong:
+    ldr x1, [sp, OSUM]
+    str x0, [x1]
 
     // return TRUE;
     // Epilog and return lLarger
