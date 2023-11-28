@@ -65,6 +65,8 @@ BigInt_larger:
     b endif1
 
     else1:
+
+    // lLarger = lLength2;
     str x1, [sp, LLARGER]
 
     endif1:
