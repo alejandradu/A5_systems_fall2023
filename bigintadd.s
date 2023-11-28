@@ -136,7 +136,9 @@ BigInt_add:
 
     // memset(oSum->aulDigits, 0, MAX_DIGITS * sizeof(unsigned long));
     ldr x0, [sp, OSUM]
-    ldr x0, [x0, AULDIGITS]
+    // ldr x0, [x0, AULDIGITS]
+    add x0, x0, AULDIGITS
+
     // assuming that 0 is treated as a long
     mov x1, 0 
     mov x2, MAX_DIGITS
@@ -170,11 +172,16 @@ BigInt_add:
 
     // ulSum += oAddend1->aulDigits[lIndex];
     ldr x0, [sp, OADDEND1]
-    ldr x0, [x0, AULDIGITS]
+    add x0, x0, AULDIGITS
     ldr x1, [sp, LINDEX]
-    ldr x0, [x0, x1, lsl 3]
+    lsl x1, x1, 3
+    add x0, x0, x1
+    // ldr x0, [x0, AULDIGITS]
+    // ldr x1, [sp, LINDEX]
+    // ldr x0, [x0, x1, lsl 3]
     ldr x2, [sp, ULSUM]
     add x2, x2, x0
+    str x2, [sp, ULSUM]
 
     //if (ulSum >= oAddend1->aulDigits[lIndex]) goto endif3;
     // x0 is still oAddend1->aulDigits[lIndex]
@@ -190,11 +197,16 @@ BigInt_add:
 
     // ulSum += oAddend2->aulDigits[lIndex];
     ldr x0, [sp, OADDEND2]
-    ldr x0, [x0, AULDIGITS]
+    add x0, x0, AULDIGITS
     ldr x1, [sp, LINDEX]
-    ldr x0, [x0, x1, lsl 3]
+    lsl x1, x1, 3
+    add x0, x0, x1
+    // ldr x0, [x0, AULDIGITS]
+    // ldr x1, [sp, LINDEX]
+    // ldr x0, [x0, x1, lsl 3]
     ldr x2, [sp, ULSUM]
     add x2, x2, x0
+    str x2, [sp, ULSUM]
 
     // if (ulSum >= oAddend2->aulDigits[lIndex]) goto endif4;
     // x0 is still oAddend2->aulDigits[lIndex]
@@ -211,10 +223,12 @@ BigInt_add:
     // oSum->aulDigits[lIndex] = ulSum;
     ldr x0, [sp, ULSUM]
     ldr x1, [sp, OSUM]
-    ldr x1, [x1, AULDIGITS]
+    add x1, x1, AULDIGITS
+    // ldr x1, [x1, AULDIGITS]
     mov x2, LINDEX
     lsl x2, x2, 3
-    ldr x1, [x1, x2]
+    add x1, x1, x2
+    // ldr x1, [x1, x2]
     str x0, [sp, x1]
     // idea for optimization:  str x0, [sp, OSUM, AULDIGITS, LINDEX, lsl 3]
 
@@ -255,14 +269,23 @@ BigInt_add:
 
     // oSum->aulDigits[lSumLength] = 1;
     mov x0, 1
-    // not sure if the following line works
-    ldr x0, [sp, ULSUM]
     ldr x1, [sp, OSUM]
-    ldr x1, [x1, AULDIGITS]
+    add x1, x1, AULDIGITS
+    // ldr x1, [x1, AULDIGITS]
     mov x2, LINDEX
     lsl x2, x2, 3
-    ldr x1, [x1, x2]
+    add x1, x1, x2
+    //ldr x1, [x1, x2]
     str x0, [sp, x1]
+
+    // not sure if the following line works
+    // ldr x0, [sp, ULSUM]
+    // ldr x1, [sp, OSUM]
+    // ldr x1, [x1, AULDIGITS]
+    // mov x2, LINDEX
+    // lsl x2, x2, 3
+    // ldr x1, [x1, x2]
+    // str x0, [sp, x1]
 
     // lSumLength++;
     ldr x0, [sp, LSUMLENGTH]
