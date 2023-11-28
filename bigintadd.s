@@ -179,9 +179,6 @@ BigInt_add:
     lsl x1, x1, 3
     add x0, x0, x1
     ldr x0, [x0]
-    // ldr x0, [x0, AULDIGITS]
-    // ldr x1, [sp, LINDEX]
-    // ldr x0, [x0, x1, lsl 3]
     ldr x2, [sp, ULSUM]
     add x2, x2, x0
     str x2, [sp, ULSUM]
@@ -213,9 +210,6 @@ BigInt_add:
     lsl x1, x1, 3
     add x0, x0, x1
     ldr x0, [x0]
-    // ldr x0, [x0, AULDIGITS]
-    // ldr x1, [sp, LINDEX]
-    // ldr x0, [x0, x1, lsl 3]
     ldr x2, [sp, ULSUM]
     add x2, x2, x0
     str x2, [sp, ULSUM]
@@ -245,13 +239,10 @@ BigInt_add:
     ldr x0, [sp, ULSUM]
     ldr x1, [sp, OSUM]
     add x1, x1, AULDIGITS
-    // ldr x1, [x1, AULDIGITS]
     ldr x2, [sp, LINDEX]
     lsl x2, x2, 3
     add x1, x1, x2
-    // ldr x1, [x1, x2]
     str x0, [x1]
-    // idea for optimization:  str x0, [sp, OSUM, AULDIGITS, LINDEX, lsl 3]
 
     // lIndex++;
     ldr x0, [sp, LINDEX]
@@ -293,21 +284,11 @@ BigInt_add:
     mov x0, 1
     ldr x1, [sp, OSUM]
     add x1, x1, AULDIGITS
-    // ldr x1, [x1, AULDIGITS]
     ldr x2, [sp, LSUMLENGTH]
     lsl x2, x2, 3
     add x1, x1, x2
-    // ldr x1, [x1, x2]
     str x0, [x1]
 
-    // not sure if the following line works
-    // ldr x0, [sp, ULSUM]
-    // ldr x1, [sp, OSUM]
-    // ldr x1, [x1, AULDIGITS]
-    // mov x2, LINDEX
-    // lsl x2, x2, 3
-    // ldr x1, [x1, x2]
-    // str x0, [sp, x1]
 
     // lSumLength++;
     ldr x0, [sp, LSUMLENGTH]
