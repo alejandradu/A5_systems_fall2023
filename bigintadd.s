@@ -29,7 +29,7 @@
     //----------------------------------------------------------------
 
     // Must be a multiple of 16
-    .equ BIG_INT_LARGER_ST 32
+    .equ BIG_INT_LARGER_ST, 32
 
     // Local Variable Stack Offsets:
     .equ LLARGER, 8
@@ -122,20 +122,20 @@ BigInt_add:
     // lSumLength = BigInt_larger(oAddend1->lLength, oAddend2->lLength);
     ldr x0, [sp,OADDEND1]
     ldr x0, [x0]
-    ldr x1, [sp, oAddend2]
+    ldr x1, [sp, OADDEND22]
     ldr x1, [x0]
     bl  BigInt_larger
     str x0, [sp, LSUMLENGTH]
 
     // if (oSum->lLength <= lSumLength) goto endif2;
-    ldr x0, [sp, oSum]
+    ldr x0, [sp, OSUM]
     ldr x0, [x0]
-    ldr x1, [sp, lSumLength]
+    ldr x1, [sp, LSUMLENGTH]
     cmp x0, x1
     ble endif2
 
     // memset(oSum->aulDigits, 0, MAX_DIGITS * sizeof(unsigned long));
-    ldr x0, [sp, oSum]
+    ldr x0, [sp, OSUM]
     ldr x0, [x0, AULDIGITS]
     // assuming that 0 is treated as a long
     mov x1, 0 
@@ -166,7 +166,7 @@ BigInt_add:
 
     // ulCarry = 0;
     mov x0, 0
-    str x0, [ULCARRY]
+    str x0, [sp, ULCARRY]
 
     // ulSum += oAddend1->aulDigits[lIndex];
     ldr x0, [sp, OADDEND1]
@@ -230,7 +230,7 @@ BigInt_add:
 
     // if (lSumLength != MAX_DIGITS) goto endif6;
     ldr x0, [sp, LSUMLENGTH]
-    com x0, MAX_DIGITS
+    cmp x0, MAX_DIGITS
     bne endif6
 
     // return FALSE;
