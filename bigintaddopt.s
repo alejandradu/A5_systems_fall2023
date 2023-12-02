@@ -71,8 +71,6 @@ BigInt_larger:
     // long lLarger;
 
     //if (lLength1 <= lLength2) goto else1; (assuming these might be signed longs)
-    ldr x0, [sp, LLENGTH1]
-    ldr x1, [sp, LLENGTH2]
     cmp LLENGTH1, LLENGTH2
     ble else1
 
