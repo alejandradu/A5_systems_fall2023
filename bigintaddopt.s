@@ -91,7 +91,7 @@ BigInt_larger:
 
     // Epilog and return lLarger
         // the callee should save the return value in x0
-        ldr     x0, LLARGER
+        mov     x0, LLARGER
         // ret branches to address x30
         ldr     x30, [sp]
 
