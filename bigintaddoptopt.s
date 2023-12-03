@@ -153,14 +153,14 @@ BigInt_add:
     ldr x0, [x0]     // this stores the value at corresponding pointer'
 
     // IF INDEX == 0, USE ADDS. ELSE USE ADCS.
-    cmp LINDEX, 0     
-    beq endif3
-
-    adcs ULSUM, ULSUM, x0   
-
-    endif3: // LINDEX = 0
-
-    adds ULSUM, ULSUM, x0
+    //cmp LINDEX, 0
+    //beq endif3
+//
+    //adcs ULSUM, x1, x0
+//
+    //endif3:
+//
+    //adds ULSUM, x1, x0    // sets the initial flag
 
     // FROM ulSum += oAddend2->aulDigits[lIndex];
     add x1, OADDEND2, AULDIGITS
@@ -168,8 +168,19 @@ BigInt_add:
     lsl x2, x2, 3
     add x1, x1, x2
     ldr x1, [x1]
+
     // C will always be set
-    adcs ULSUM, ULSUM, x1   // C + SUM + x2, also sets flag C
+    // adcs ULSUM, ULSUM, x1
+
+    // IF INDEX == 0, USE ADDS. ELSE USE ADCS.
+    cmp LINDEX, 0     // CHECK THIS
+    beq endif3
+
+    adcs ULSUM, x1, x0   
+
+    endif3: // LINDEX = 0
+
+    adds ULSUM, x1, x0    // sets the initial flag
 
     // if (ulSum >= oAddend1->aulDigits[lIndex]) goto endif3;
         // x0 is still oAddend1->aulDigits[lIndex]
@@ -201,13 +212,13 @@ BigInt_add:
 
     // TAKEN endif4:
 
-    // oSum->aulDigits[lIndex] = ulSum; - WON'T EVEN NEED ULSUM
+    // oSum->aulDigits[lIndex] = ulSum; - WON'T EVEN NEED ULSUM?
     mov x0, OSUM
     add x0, x0, AULDIGITS
     mov x1, LINDEX
     lsl x1, x1, 3
     add x0, x0, x1      // x0 is the address of oSum->aulDigits[lIndex]
-    str x2, [x0]
+    str ULSUM, [x0]
 
     // lIndex++;
     add LINDEX, LINDEX, 1
