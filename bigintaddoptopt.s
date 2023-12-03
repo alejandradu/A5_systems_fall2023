@@ -31,7 +31,7 @@
 // BigInt_T oSum)
 //--------------------------------------------------------------
 
-    // must be a multiple of 16
+    // must be a multiple of 16 //
     .equ BIGINT_ADD_STACK_BYTECOUNT, 64   
 
     // local variable stack offsets:
