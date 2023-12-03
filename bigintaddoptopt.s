@@ -41,7 +41,7 @@
     // .equ X22STORE, 32
 
     // parameter stack offsets:
-    // .equ X23STORE, 40
+    .equ X23STORE, 40
     .equ X24STORE, 48
     .equ X25STORE, 56
 
@@ -52,7 +52,7 @@
 
     // Local Variable equivalent registers
     // ULCARRY .req x22
-    // ULSUM   .req x23
+    ULSUM   .req x23
     LINDEX  .req x24
     LSUMLENGTH .req x25
 
@@ -240,7 +240,7 @@ BigInt_add:
         ldr x20, [sp, X20STORE]
         ldr x21, [sp, X21STORE]
         //ldr x22, [sp, X22STORE]
-        //ldr x23, [sp, X23STORE]
+        ldr x23, [sp, X23STORE]
         ldr x24, [sp, X24STORE]
         ldr x25, [sp, X25STORE]
 
@@ -281,7 +281,7 @@ BigInt_add:
         ldr x20, [sp, X20STORE]
         ldr x21, [sp, X21STORE]
         //ldr x22, [sp, X22STORE]
-        //ldr x23, [sp, X23STORE]
+        ldr x23, [sp, X23STORE]
         ldr x24, [sp, X24STORE]
         ldr x25, [sp, X25STORE]
 
