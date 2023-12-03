@@ -38,10 +38,10 @@
     .equ X19STORE, 8
     .equ X20STORE, 16
     .equ X21STORE, 24
-    .equ X22STORE, 32
+    // .equ X22STORE, 32
 
     // parameter stack offsets:
-    .equ X23STORE, 40
+    // .equ X23STORE, 40
     .equ X24STORE, 48
     .equ X25STORE, 56
 
@@ -51,8 +51,8 @@
     OADDEND1 .req x21
 
     // Local Variable equivalent registers
-    ULCARRY .req x22
-    ULSUM   .req x23
+    // ULCARRY .req x22
+    // ULSUM   .req x23
     LINDEX  .req x24
     LSUMLENGTH .req x25
 
@@ -69,15 +69,15 @@ BigInt_add:
     str x19, [sp, X19STORE]
     str x20, [sp, X20STORE]
     str x21, [sp, X21STORE]
-    str x22, [sp, X22STORE]
-    str x23, [sp, X23STORE]
+    // str x22, [sp, X22STORE]
+    // str x23, [sp, X23STORE]
     str x24, [sp, X24STORE]
     str x25, [sp, X25STORE]
 
     // save the values of parameters into registers
-    mov OSUM, x2
-    mov OADDEND1, x0    // THIS IS pointer to LLENGTH1
+    mov OADDEND1, x0    // THIS IS pointer to 
     mov OADDEND2, x1    // THIS IS pointer to LLENGTH2
+    mov OSUM, x2
 
     // unsigned long ulCarry;
     // unsigned long ulSum;
@@ -127,7 +127,8 @@ BigInt_add:
     endif2:
 
     // ulCarry = 0;
-    mov ULCARRY, 0
+    // mov ULCARRY, 0  - will use C flag (internal), starts at 0
+    // POT BUG: what is C initialized to?
 
     // lIndex = 0;
     mov LINDEX, 0
@@ -139,67 +140,75 @@ BigInt_add:
     loop1:
 
     // ulSum = ulCarry;
-    mov ULSUM,  ULCARRY
+    // TAKEN mov ULSUM,  ULCARRY - adds will already consider C
 
     // ulCarry = 0;
-    mov ULCARRY, 0
+    // TAKEN mov ULCARRY, 0
 
-    // ulSum += oAddend1->aulDigits[lIndex];
+    // FROM ulSum += oAddend1->aulDigits[lIndex];
+    // REALLY get the value at oAddend1->aulDigits[lIndex]
     add x0, OADDEND1, AULDIGITS
     mov x1, LINDEX
     lsl x1, x1, 3
-    add x0, x0, x1
-    ldr x0, [x0]
-    add ULSUM, ULSUM, x0
+    add x0, x0, x1   // this gets pointer to value at index
+    ldr x0, [x0]     // this stores the value at corresponding pointer
+
+    // FROM ulSum += oAddend2->aulDigits[lIndex];
+    // REALLY get the value at oAddend2->aulDigits[lIndex]
+    add x1, OADDEND2, AULDIGITS
+    mov x2, LINDEX
+    lsl x2, x2, 3
+    add x1, x1, x2
+    ldr x1, [x1]
+
+    // oAddend1->aulDigits[lIndex] + oAddend2->aulDigits[lIndex]
+    // IF INDEX == 0, USE ADDS. ELSE USE ADCS.
+    cmp LINDEX, 0
+    beq endif3
+
+    adcs x2, x0, x1   // C + SUM + x2, also sets flag C
+
+    endif3: //lindex = 0
+
+    adds x2, x0, x1     // Sets C = 1 for unsigned overflow
 
     // if (ulSum >= oAddend1->aulDigits[lIndex]) goto endif3;
-    // add x0, OADDEND1, AULDIGITS
+        // x0 is still oAddend1->aulDigits[lIndex]
+        // x2 is still ulSum
+    // TAKEN cmp ULSUM, x0
+    // TAKEN bhs endif3
+
+    //ulCarry = 1;
+    // TAKEN mov ULCARRY, 1
+
+    // TAKEN endif3:
+
+    // ulSum += oAddend2->aulDigits[lIndex];
+    // add x0, OADDEND2, AULDIGITS
     // mov x1, LINDEX
     // lsl x1, x1, 3
     // add x0, x0, x1
-    // ldr x0, [x0]      // x0 is the value of oAddend1->aulDigits[lIndex]
-    // FURTHER OPT: get rid of the above
-    // x0 is still oAddend1->aulDigits[lIndex]
-    // x2 is still ulSum
-    cmp ULSUM, x0
-    bhs endif3
-
-    //ulCarry = 1;
-    mov ULCARRY, 1
-
-    endif3:
-
-    // ulSum += oAddend2->aulDigits[lIndex];
-    add x0, OADDEND2, AULDIGITS
-    mov x1, LINDEX
-    lsl x1, x1, 3
-    add x0, x0, x1
-    ldr x0, [x0]
-    add ULSUM, ULSUM, x0
+    // ldr x0, [x0]
+    // add ULSUM, ULSUM, x0
 
     // if (ulSum >= oAddend2->aulDigits[lIndex]) goto endif4;
-    // mov x0, OADDEND2
-    // add x0, x0, AULDIGITS // idea for optimization: add x0, OADDEND2, AULDIGITS
-    // mov x1, LINDEX
-    // ldr x0, [x0, x1, lsl 3]  // x0 is val of oAddend2->aulDigits[lIndex]
-    // FURTHER OPT: get rid of the above
-    // x0 is still oAddend2->aulDigits[lIndex]
-    // x2 is still ulSum
-    cmp ULSUM, x0
-    bhs endif4
+        // x0 is still oAddend2->aulDigits[lIndex]
+        // x2 is still ulSum
+    // TAKEN cmp ULSUM, x0
+    // TAKEN bhs endif4
 
     //  ulCarry = 1;
-    mov ULCARRY, 1
+    // TAKEN mov ULCARRY, 1
 
-    endif4:
+    // TAKEN endif4:
 
-    // oSum->aulDigits[lIndex] = ulSum;
+    // oSum->aulDigits[lIndex] = ulSum; - WON'T EVEN NEED ULSUM
     mov x0, OSUM
     add x0, x0, AULDIGITS
     mov x1, LINDEX
     lsl x1, x1, 3
     add x0, x0, x1      // x0 is the address of oSum->aulDigits[lIndex]
-    str ULSUM, [x0]
+    str x2, [x0]
 
     // lIndex++;
     add LINDEX, LINDEX, 1
@@ -211,8 +220,9 @@ BigInt_add:
     loop1End:
 
     // if (ulCarry != 1) goto endif5;
-    cmp ULCARRY, 1
-    bne endif5
+    // REALLY if C == 0 goto endif5
+    // TAKEN cmp ULCARRY, 1
+    blo endif5
 
     // if (lSumLength != MAX_DIGITS) goto endif6;
     cmp LSUMLENGTH, MAX_DIGITS
