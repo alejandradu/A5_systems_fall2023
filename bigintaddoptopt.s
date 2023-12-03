@@ -45,11 +45,6 @@
     .equ X24STORE, 48
     .equ X25STORE, 56
 
-    // // BigIntLarger local Variable Stack Offsets:
-    // .equ X26STORE, 64//
-    // // BigIntLarger Parameter stack Offsets:
-    // .equ X27STORE, 72
-    // .equ X28STORE, 80//
     // Parameter equivalent registers
     OSUM .req x19
     OADDEND2 .req x20
@@ -60,13 +55,6 @@
     ULSUM   .req x23
     LINDEX  .req x24
     LSUMLENGTH .req x25
-
-    // BigIntLarger Local Variable equivalent registers
-    // LLARGER .req x26  // thIS IS EQUATED TO LSUMLENGTH
-
-    // BigIntLarger Parameter equivalent registers
-    // LLENGTH1 .req x27  equated to OADDEND1
-    // LLENGTH2 .req x28  equated to OADDEND2
 
     .global BigInt_add
 
@@ -85,9 +73,6 @@ BigInt_add:
     str x23, [sp, X23STORE]
     str x24, [sp, X24STORE]
     str x25, [sp, X25STORE]
-    // str x26, [sp, X26STORE]
-    // str x27, [sp, X27STORE]
-    // str x28, [sp, X28STORE]
 
     // save the values of parameters into registers
     mov OSUM, x2
@@ -100,18 +85,6 @@ BigInt_add:
     // long lSumLength;
 
     // lSumLength = BigInt_larger(oAddend1->lLength, oAddend2->lLength);
-    //ldr x0, [OADDEND1] // prepare to pass oAddend1->lLength
-    //ldr x1, [OADDEND2] // prepare to pass oAddend2->lLength
-    // bl  BigInt_larger
-
-    // -------- INSERTING INLINE
-
-    // save lLength1 to LLENGTH1 (x19)
-    //mov LLENGTH1, x0
-    // save lLength2 to LLENGTH2 (x20)
-    //mov LLENGTH2, x1
-
-    // long lLarger;
 
     //if (lLength1 <= lLength2) goto else1; assuming signed longs
     cmp OADDEND1, OADDEND2
@@ -129,8 +102,6 @@ BigInt_add:
     mov LSUMLENGTH, OADDEND2
 
     endif1:
-
-    // mov LSUMLENGTH, x0 // saving output of BigInt_larger REMOVE
 
     // if (oSum->lLength <= lSumLength) goto endif2;
     ldr x0, [OSUM]
@@ -177,12 +148,12 @@ BigInt_add:
     add ULSUM, ULSUM, x0
 
     // if (ulSum >= oAddend1->aulDigits[lIndex]) goto endif3;
-    add x0, OADDEND1, AULDIGITS
-    mov x1, LINDEX
-    lsl x1, x1, 3
-    add x0, x0, x1
-    ldr x0, [x0]  // x0 is the value of oAddend1->aulDigits[lIndex]
-    // ideas for further optimization: get rid of the above
+    //add x0, OADDEND1, AULDIGITS
+    //mov x1, LINDEX
+    //lsl x1, x1, 3
+    //add x0, x0, x1
+    //ldr x0, [x0]      // x0 is the value of oAddend1->aulDigits[lIndex]
+    // FURTHER OPT: get rid of the above
     // x0 is still oAddend1->aulDigits[lIndex]
     // x2 is still ulSum
     cmp ULSUM, x0
@@ -202,11 +173,11 @@ BigInt_add:
     add ULSUM, ULSUM, x0
 
     // if (ulSum >= oAddend2->aulDigits[lIndex]) goto endif4;
-    mov x0, OADDEND2
-    add x0, x0, AULDIGITS // idea for optimization: add x0, OADDEND2, AULDIGITS
-    mov x1, LINDEX
-    ldr x0, [x0, x1, lsl 3]  // x0 is val of oAddend2->aulDigits[lIndex]
-    // idea for optimization: get rid of the above
+    //mov x0, OADDEND2
+    //add x0, x0, AULDIGITS // idea for optimization: add x0, OADDEND2, AULDIGITS
+    //mov x1, LINDEX
+    //ldr x0, [x0, x1, lsl 3]  // x0 is val of oAddend2->aulDigits[lIndex]
+    // FURTHER OPT: get rid of the above
     // x0 is still oAddend2->aulDigits[lIndex]
     // x2 is still ulSum
     cmp ULSUM, x0
