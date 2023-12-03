@@ -111,7 +111,6 @@ BigInt_add:
     // if (oSum->lLength <= lSumLength) goto endif2;
     ldr x0, [OSUM]
     cmp x0, LSUMLENGTH
-    // FURTHER OPT: not ldr?
     ble endif2
 
     // memset(oSum->aulDigits, 0, MAX_DIGITS * sizeof(unsigned long));
@@ -154,11 +153,11 @@ BigInt_add:
     add ULSUM, ULSUM, x0
 
     // if (ulSum >= oAddend1->aulDigits[lIndex]) goto endif3;
-    add x0, OADDEND1, AULDIGITS
-    mov x1, LINDEX
-    lsl x1, x1, 3
-    add x0, x0, x1
-    ldr x0, [x0]      // x0 is the value of oAddend1->aulDigits[lIndex]
+    // add x0, OADDEND1, AULDIGITS
+    // mov x1, LINDEX
+    // lsl x1, x1, 3
+    // add x0, x0, x1
+    // ldr x0, [x0]      // x0 is the value of oAddend1->aulDigits[lIndex]
     // FURTHER OPT: get rid of the above
     // x0 is still oAddend1->aulDigits[lIndex]
     // x2 is still ulSum
@@ -179,10 +178,10 @@ BigInt_add:
     add ULSUM, ULSUM, x0
 
     // if (ulSum >= oAddend2->aulDigits[lIndex]) goto endif4;
-    mov x0, OADDEND2
-    add x0, x0, AULDIGITS // idea for optimization: add x0, OADDEND2, AULDIGITS
-    mov x1, LINDEX
-    ldr x0, [x0, x1, lsl 3]  // x0 is val of oAddend2->aulDigits[lIndex]
+    // mov x0, OADDEND2
+    // add x0, x0, AULDIGITS // idea for optimization: add x0, OADDEND2, AULDIGITS
+    // mov x1, LINDEX
+    // ldr x0, [x0, x1, lsl 3]  // x0 is val of oAddend2->aulDigits[lIndex]
     // FURTHER OPT: get rid of the above
     // x0 is still oAddend2->aulDigits[lIndex]
     // x2 is still ulSum
