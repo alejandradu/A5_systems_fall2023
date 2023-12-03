@@ -23,100 +23,16 @@
 
     .section .text
 
-    //----------------------------------------------------------------
-    // Return the larger of lLength1 and lLength2.
-    // static long BigInt_larger(long lLength1, long lLength2)
-    //----------------------------------------------------------------
-
-    // Must be a multiple of 16
-    .equ BIG_INT_LARGER_ST, 32
-
-    // Parameter stack Offsets:
-    .equ X19STORE, 8
-    .equ X20STORE, 16
-
-    // Local Variable Stack Offsets:
-    .equ X21STORE, 24
-
-    // Parameter equivalent registers
-    LLENGTH1 .req x19
-    LLENGTH2 .req x20
-
-    // Local Variable equivalent registers
-    LLARGER .req x21
-
-BigInt_larger:
-    // Prolog
-    // push the entire frame
-    sub sp, sp, BIG_INT_LARGER_ST
-    // store the return address given by caller saved in x30
-    str x30, [sp]
-
-    // for parameters
-    // store the original value in x# given by caller to stack
-    str x19, [sp, X19STORE]
-    str x20, [sp, X20STORE]
-
-    // for the local variable
-    // store the original value of x# given by caller to stack
-    str x21, [sp, X21STORE]
-
-    // save lLength1 to LLENGTH1 (x19)
-    mov LLENGTH1, x0
-    // save lLength2 to LLENGTH2 (x20)
-    mov LLENGTH2, x1
-
-    // long lLarger;
-
-    //if (lLength1 <= lLength2) goto else1; assuming signed longs
-    cmp LLENGTH1, LLENGTH2
-    ble else1
-
-    // lLarger = lLength1; 
-    mov LLARGER, LLENGTH1  
-
-    // goto endif1;
-    b endif1
-
-    else1:
-
-    // lLarger = lLength2;
-    mov LLARGER, LLENGTH2
-
-    endif1:
-
-    // Epilog and return lLarger
-        // the callee should save the return value in x0
-        mov     x0, LLARGER
-        // ret branches to address x30
-        ldr     x30, [sp]
-
-        // restoring spaces allocated for parameters
-        // restore the original value of x# given by caller to stack
-        ldr x19, [sp, X19STORE]
-        ldr x20, [sp, X20STORE]
-
-        // restoring spaces allocated for the local variable
-        // restore the original value of x21 given by caller to stack
-        ldr x21, [sp, X21STORE]        
-        
-        // pop the stack frame:
-        add     sp, sp, BIG_INT_LARGER_ST
-        ret
-
-        .size   BigInt_larger, (. - BigInt_larger)
-
-
-    //--------------------------------------------------------------
-    // Assign the sum of oAddend1 and oAddend2 to oSum.  oSum should
-    // be distinct from oAddend1 and oAddend2.  Return 0 (FALSE) if 
-    // an overflow occurred, and 1 (TRUE) otherwise. 
-    // int BigInt_add (BigInt_T oAddend1, BigInt_T oAddend2, 
-    // BigInt_T oSum)
-    //--------------------------------------------------------------
+//--------------------------------------------------------------
+// Assign the sum of oAddend1 and oAddend2 to oSum.  oSum should
+// be distinct from oAddend1 and oAddend2.  Return 0 (FALSE) if 
+// an overflow occurred, and 1 (TRUE) otherwise. 
+// int BigInt_add (BigInt_T oAddend1, BigInt_T oAddend2, 
+// BigInt_T oSum)
+//--------------------------------------------------------------
 
     // must be a multiple of 16
-    .equ BIGINT_ADD_STACK_BYTECOUNT, 64
+    .equ BIGINT_ADD_STACK_BYTECOUNT, 64   // CHECK THIS
 
     // local variable stack offsets:
     .equ X19STORE, 8
@@ -129,6 +45,13 @@ BigInt_larger:
     .equ X24STORE, 48
     .equ X25STORE, 56
 
+    @ // BigIntLarger local Variable Stack Offsets:
+    @ .equ X26STORE, 64
+
+    @ // BigIntLarger Parameter stack Offsets:
+    @ .equ X27STORE, 72
+    @ .equ X28STORE, 80
+
     // Parameter equivalent registers
     OSUM .req x19
     OADDEND2 .req x20
@@ -139,6 +62,13 @@ BigInt_larger:
     ULSUM   .req x23
     LINDEX  .req x24
     LSUMLENGTH .req x25
+
+    // BigIntLarger Local Variable equivalent registers
+    // LLARGER .req x26  // thIS IS EQUATED TO LSUMLENGTH
+
+    // BigIntLarger Parameter equivalent registers
+    // LLENGTH1 .req x27  equated to OADDEND1
+    // LLENGTH2 .req x28  equated to OADDEND2
 
     .global BigInt_add
 
@@ -157,11 +87,14 @@ BigInt_add:
     str x23, [sp, X23STORE]
     str x24, [sp, X24STORE]
     str x25, [sp, X25STORE]
+    // str x26, [sp, X26STORE]
+    // str x27, [sp, X27STORE]
+    // str x28, [sp, X28STORE]
 
     // save the values of parameters into registers
     mov OSUM, x2
-    mov OADDEND1, x0
-    mov OADDEND2, x1
+    mov OADDEND1, x0    // THIS IS LLENGTH1
+    MOV OADDEND2, x1    // THIS IS LLENGTH2
 
     // unsigned long ulCarry;
     // unsigned long ulSum;
@@ -169,10 +102,37 @@ BigInt_add:
     // long lSumLength;
 
     // lSumLength = BigInt_larger(oAddend1->lLength, oAddend2->lLength);
-    ldr x0, [OADDEND1] // prepare to pass oAddend1->lLength
-    ldr x1, [OADDEND2] // prepare to pass oAddend2->lLength
-    bl  BigInt_larger
-    mov LSUMLENGTH, x0 // saving output of BigInt_larger
+    //ldr x0, [OADDEND1] // prepare to pass oAddend1->lLength
+    //ldr x1, [OADDEND2] // prepare to pass oAddend2->lLength
+    // bl  BigInt_larger
+
+    // -------- INSERTING INLINE
+
+    // save lLength1 to LLENGTH1 (x19)
+    //mov LLENGTH1, x0
+    // save lLength2 to LLENGTH2 (x20)
+    //mov LLENGTH2, x1
+
+    // long lLarger;
+
+    //if (lLength1 <= lLength2) goto else1; assuming signed longs
+    cmp OADDEND1, OADDEND2
+    ble else1
+
+    // lLarger = lLength1; 
+    mov LSUMLENGTH, OADDEND1  
+
+    // goto endif1;
+    b endif1
+
+    else1:
+
+    // lLarger = lLength2;
+    mov LSUMLENGTH, OADDEND2
+
+    endif1:
+
+    // mov LSUMLENGTH, x0 // saving output of BigInt_larger REMOVE
 
     // if (oSum->lLength <= lSumLength) goto endif2;
     ldr x0, [OSUM]
@@ -198,11 +158,11 @@ BigInt_add:
     // lIndex = 0;
     mov LINDEX, 0
 
-    loop1:
-
     //if (lIndex >= lSumLength) goto loop1End;
     cmp LINDEX, LSUMLENGTH
     bge loop1End
+
+    loop1:
 
     // ulSum = ulCarry;
     mov ULSUM,  ULCARRY
@@ -270,8 +230,9 @@ BigInt_add:
     // lIndex++;
     add LINDEX, LINDEX, 1
 
-    // goto loop1;
-    b loop1
+    //if (lIndex < lSumLength) goto loop1;
+    cmp LINDEX, LSUMLENGTH
+    ble loop1
 
     loop1End:
 
