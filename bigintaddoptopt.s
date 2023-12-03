@@ -76,8 +76,8 @@ BigInt_add:
 
     // save the values of parameters into registers
     mov OSUM, x2
-    mov OADDEND1, x0    // THIS IS LLENGTH1
-    mov OADDEND2, x1    // THIS IS LLENGTH2
+    mov OADDEND1, x0    // THIS IS pointer to LLENGTH1
+    mov OADDEND2, x1    // THIS IS pointer to LLENGTH2
 
     // unsigned long ulCarry;
     // unsigned long ulSum;
@@ -87,11 +87,11 @@ BigInt_add:
     // lSumLength = BigInt_larger(oAddend1->lLength, oAddend2->lLength);
 
     //if (lLength1 <= lLength2) goto else1; assuming signed longs
-    cmp OADDEND1, OADDEND2
+    cmp [OADDEND1], [OADDEND2]
     ble else1
 
     // lLarger = lLength1; 
-    mov LSUMLENGTH, OADDEND1  
+    mov LSUMLENGTH, [OADDEND1]  
 
     // goto endif1;
     b endif1
@@ -99,13 +99,14 @@ BigInt_add:
     else1:
 
     // lLarger = lLength2;
-    mov LSUMLENGTH, OADDEND2
+    mov LSUMLENGTH, [OADDEND2]
 
     endif1:
 
     // if (oSum->lLength <= lSumLength) goto endif2;
     ldr x0, [OSUM]
     cmp x0, LSUMLENGTH
+    // FURTHER OPT: not ldr?
     ble endif2
 
     // memset(oSum->aulDigits, 0, MAX_DIGITS * sizeof(unsigned long));
