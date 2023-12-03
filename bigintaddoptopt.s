@@ -146,31 +146,30 @@ BigInt_add:
     // TAKEN mov ULCARRY, 0
 
     // FROM ulSum += oAddend1->aulDigits[lIndex];
-    // REALLY get the value at oAddend1->aulDigits[lIndex]
     add x0, OADDEND1, AULDIGITS
     mov x1, LINDEX
     lsl x1, x1, 3
     add x0, x0, x1   // this gets pointer to value at index
-    ldr x0, [x0]     // this stores the value at corresponding pointer
+    ldr x0, [x0]     // this stores the value at corresponding pointer'
 
-    // FROM ulSum += oAddend2->aulDigits[lIndex];
-    // REALLY get the value at oAddend2->aulDigits[lIndex]
-    add x2, OADDEND2, AULDIGITS
-    mov x3, LINDEX
-    lsl x3, x3, 3
-    add x2, x2, x3
-    ldr x2, [x2]
-
-    // oAddend1->aulDigits[lIndex] + oAddend2->aulDigits[lIndex]
     // IF INDEX == 0, USE ADDS. ELSE USE ADCS.
-    cmp LINDEX, 0
+    cmp LINDEX, 0     
     beq endif3
 
-    adcs x3, x0, x2   // C + SUM + x2, also sets flag C
+    adcs ULSUM, ULSUM, x0   
 
-    endif3: //lindex = 0
+    endif3: // LINDEX = 0
 
-    adds x3, x0, x2     // Sets C = 1 for unsigned overflow
+    adds ULSUM, ULSUM, x0
+
+    // FROM ulSum += oAddend2->aulDigits[lIndex];
+    add x1, OADDEND2, AULDIGITS
+    mov x2, LINDEX
+    lsl x2, x2, 3
+    add x1, x1, x2
+    ldr x1, [x1]
+    // C will always be set
+    adcs ULSUM, ULSUM, x1   // C + SUM + x2, also sets flag C
 
     // if (ulSum >= oAddend1->aulDigits[lIndex]) goto endif3;
         // x0 is still oAddend1->aulDigits[lIndex]
@@ -208,7 +207,7 @@ BigInt_add:
     mov x1, LINDEX
     lsl x1, x1, 3
     add x0, x0, x1      // x0 is the address of oSum->aulDigits[lIndex]
-    str x3, [x0]
+    str x2, [x0]
 
     // lIndex++;
     add LINDEX, LINDEX, 1
@@ -259,7 +258,7 @@ BigInt_add:
     mov x2, LSUMLENGTH
     lsl x2, x2, 3
     add x1, x1, x2
-    mov x0, 1
+    mov x0, 1  // NOTE: is this necessary
     str x0, [x1]
 
     // lSumLength++;
