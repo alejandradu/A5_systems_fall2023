@@ -77,7 +77,7 @@ BigInt_add:
     // save the values of parameters into registers
     mov OSUM, x2
     mov OADDEND1, x0    // THIS IS LLENGTH1
-    MOV OADDEND2, x1    // THIS IS LLENGTH2
+    mov OADDEND2, x1    // THIS IS LLENGTH2
 
     // unsigned long ulCarry;
     // unsigned long ulSum;
