@@ -70,7 +70,7 @@ BigInt_add:
     str x20, [sp, X20STORE]
     str x21, [sp, X21STORE]
     // str x22, [sp, X22STORE]
-    // str x23, [sp, X23STORE]
+    str x23, [sp, X23STORE]
     str x24, [sp, X24STORE]
     str x25, [sp, X25STORE]
 
