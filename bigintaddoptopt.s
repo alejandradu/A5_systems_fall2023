@@ -45,13 +45,11 @@
     .equ X24STORE, 48
     .equ X25STORE, 56
 
-    @ // BigIntLarger local Variable Stack Offsets:
-    @ .equ X26STORE, 64
-
-    @ // BigIntLarger Parameter stack Offsets:
-    @ .equ X27STORE, 72
-    @ .equ X28STORE, 80
-
+    // // BigIntLarger local Variable Stack Offsets:
+    // .equ X26STORE, 64//
+    // // BigIntLarger Parameter stack Offsets:
+    // .equ X27STORE, 72
+    // .equ X28STORE, 80//
     // Parameter equivalent registers
     OSUM .req x19
     OADDEND2 .req x20
