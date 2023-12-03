@@ -53,13 +53,12 @@ BigInt_larger:
     str x30, [sp]
 
     // for parameters
-    // store the original value of x19 given by caller to stack
+    // store the original value in x# given by caller to stack
     str x19, [sp, X19STORE]
-    // store the original value of x20 given by caller to stack
     str x20, [sp, X20STORE]
 
     // for the local variable
-    // store the original value of x21 given by caller to stack
+    // store the original value of x# given by caller to stack
     str x21, [sp, X21STORE]
 
     // save lLength1 to LLENGTH1 (x19)
@@ -67,10 +66,9 @@ BigInt_larger:
     // save lLength2 to LLENGTH2 (x20)
     mov LLENGTH2, x1
 
-
     // long lLarger;
 
-    //if (lLength1 <= lLength2) goto else1; (assuming these might be signed longs)
+    //if (lLength1 <= lLength2) goto else1; assuming signed longs
     cmp LLENGTH1, LLENGTH2
     ble else1
 
@@ -94,9 +92,8 @@ BigInt_larger:
         ldr     x30, [sp]
 
         // restoring spaces allocated for parameters
-        // restore the original value of x19 given by caller to stack
+        // restore the original value of x# given by caller to stack
         ldr x19, [sp, X19STORE]
-        // restore the original value of x20 given by caller to stack
         ldr x20, [sp, X20STORE]
 
         // restoring spaces allocated for the local variable
@@ -257,8 +254,6 @@ BigInt_add:
     cmp ULSUM, x0
     bhs endif4
 
-    // --------------- CHANGE THE ABOVE 
-
     //  ulCarry = 1;
     mov ULCARRY, 1
 
@@ -269,7 +264,7 @@ BigInt_add:
     add x0, x0, AULDIGITS
     mov x1, LINDEX
     lsl x1, x1, 3
-    add x0, x0, x1   // x0 is the address of oSum->aulDigits[lIndex]
+    add x0, x0, x1      // x0 is the address of oSum->aulDigits[lIndex]
     str ULSUM, [x0]
 
     // lIndex++;
@@ -289,6 +284,7 @@ BigInt_add:
     bne endif6
 
     // return FALSE;
+    
     // Epilog and return lLarger
         // the callee should save the return value in x0
         mov     x0, FALSE

@@ -49,10 +49,9 @@ BigInt_larger:
     // store the second parameter given by caller saved in x1
     str x1, [sp, LLENGTH2]
 
-
     // long lLarger;
 
-    //if (lLength1 <= lLength2) goto else1; (assuming these might be signed longs)
+    //if (lLength1 <= lLength2) goto else1; assuming signed longs
     ldr x0, [sp, LLENGTH1]
     ldr x1, [sp, LLENGTH2]
     cmp x0, x1
@@ -189,11 +188,8 @@ BigInt_add:
     ldr x1, [sp, LINDEX]
     lsl x1, x1, 3
     add x0, x0, x1
-    ldr x0, [x0]  // x0 is the value of oAddend1->aulDigits[lIndex]
+    ldr x0, [x0]     // x0 is the value of oAddend1->aulDigits[lIndex]
     ldr x2, [sp, ULSUM]
-    // ideas for optimization: get rid of the above
-    // x0 is still oAddend1->aulDigits[lIndex]
-    // x2 is still ulSum
     cmp x2, x0
     bhs endif3
 
@@ -220,11 +216,8 @@ BigInt_add:
     ldr x1, [sp, LINDEX]
     lsl x1, x1, 3
     add x0, x0, x1
-    ldr x0, [x0]  // x0 is the value of oAddend2->aulDigits[lIndex]
+    ldr x0, [x0]      // x0 is the value of oAddend2->aulDigits[lIndex]
     ldr x2, [sp, ULSUM]
-    // idea for optimization: get rid of the above
-    // x0 is still oAddend2->aulDigits[lIndex]
-    // x2 is still ulSum
     cmp x2, x0
     bhs endif4
 
@@ -234,7 +227,6 @@ BigInt_add:
 
     endif4:
 
-    // probably nothing wrong here
     // oSum->aulDigits[lIndex] = ulSum;
     ldr x0, [sp, ULSUM]
     ldr x1, [sp, OSUM]
@@ -265,7 +257,7 @@ BigInt_add:
     bne endif6
 
     // return FALSE;
-    // not sure if the following works
+
     // Epilog and return lLarger
         // the callee should save the return value in x0
         mov     x0, FALSE
@@ -279,7 +271,6 @@ BigInt_add:
 
     endif6:
 
-    // definitely something wrong here
     // oSum->aulDigits[lSumLength] = 1;
     mov x0, 1
     ldr x1, [sp, OSUM]
@@ -299,12 +290,8 @@ BigInt_add:
 
     // oSum->lLength = lSumLength;
     ldr x0, [sp, LSUMLENGTH]
-    // !!!!! this following is right
     ldr x1, [sp, OSUM]
     str x0, [x1]
-
-    // this one is wrong: (eventhough I don't know why that's the case)
-    // str x0, [sp, OSUM]
 
     // return TRUE;
     // Epilog and return lLarger
