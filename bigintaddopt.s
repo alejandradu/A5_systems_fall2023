@@ -224,9 +224,6 @@ BigInt_add:
     lsl x1, x1, 3
     add x0, x0, x1
     ldr x0, [x0]  // x0 is the value of oAddend1->aulDigits[lIndex]
-    // ideas for further optimization: get rid of the above
-    // x0 is still oAddend1->aulDigits[lIndex]
-    // x2 is still ulSum
     cmp ULSUM, x0
     bhs endif3
 
@@ -245,12 +242,9 @@ BigInt_add:
 
     // if (ulSum >= oAddend2->aulDigits[lIndex]) goto endif4;
     mov x0, OADDEND2
-    add x0, x0, AULDIGITS // idea for optimization: add x0, OADDEND2, AULDIGITS
+    add x0, x0, AULDIGITS 
     mov x1, LINDEX
     ldr x0, [x0, x1, lsl 3]  // x0 is val of oAddend2->aulDigits[lIndex]
-    // idea for optimization: get rid of the above
-    // x0 is still oAddend2->aulDigits[lIndex]
-    // x2 is still ulSum
     cmp ULSUM, x0
     bhs endif4
 
