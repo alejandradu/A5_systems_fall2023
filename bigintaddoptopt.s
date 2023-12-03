@@ -207,7 +207,7 @@ BigInt_add:
 
     //if (lIndex < lSumLength) goto loop1;
     cmp LINDEX, LSUMLENGTH
-    ble loop1
+    blt loop1
 
     loop1End:
 
