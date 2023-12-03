@@ -86,12 +86,14 @@ BigInt_add:
 
     // lSumLength = BigInt_larger(oAddend1->lLength, oAddend2->lLength);
 
-    //if (lLength1 <= lLength2) goto else1; assuming signed longs
-    cmp [OADDEND1], [OADDEND2]
+    //if (lLength1 <= lLength2) goto else1; assuming signed long
+    ldr x0, [OADDEND1]
+    ldr x1, [OADDEND2]
+    cmp x0, x1
     ble else1
 
     // lLarger = lLength1; 
-    mov LSUMLENGTH, [OADDEND1]  
+    mov LSUMLENGTH, x0  
 
     // goto endif1;
     b endif1
@@ -99,7 +101,7 @@ BigInt_add:
     else1:
 
     // lLarger = lLength2;
-    mov LSUMLENGTH, [OADDEND2]
+    mov LSUMLENGTH, x1
 
     endif1:
 
