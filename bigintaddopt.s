@@ -37,13 +37,13 @@
 
     // Local Variable Stack Offsets:
     .equ X21STORE, 24
-    
-    // Local Variable equivalent registers
-    LLARGER .req x21
 
     // Parameter equivalent registers
     LLENGTH1 .req x19
     LLENGTH2 .req x20
+
+    // Local Variable equivalent registers
+    LLARGER .req x21
 
 BigInt_larger:
     // Prolog
@@ -74,8 +74,8 @@ BigInt_larger:
     cmp LLENGTH1, LLENGTH2
     ble else1
 
-    // lLarger = lLength1;
-    mov LLARGER, LLENGTH1
+    // lLarger = lLength1; POT BUG - only copy but not the pointer?
+    mov LLARGER, LLENGTH1  
 
     // goto endif1;
     b endif1
@@ -314,7 +314,7 @@ BigInt_add:
 
     // oSum->aulDigits[lSumLength] = 1;
     mov x1, OSUM
-    add OSUM, OSUM, AULDIGITS
+    add x1, x1, AULDIGITS   // POT BUG changed to modify x1
     mov x2, LSUMLENGTH
     lsl x2, x2, 3
     add x1, x1, x2

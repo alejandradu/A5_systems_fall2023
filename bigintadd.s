@@ -100,7 +100,7 @@ BigInt_larger:
     .equ LINDEX, 24
     .equ LSUMLENGTH, 32
 
-    // parameter stack offsets:
+    // parameter stack offsets (reads backwards):
     .equ OSUM, 40
     .equ OADDEND2, 48
     .equ OADDEND1, 56
