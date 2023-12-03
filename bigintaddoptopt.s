@@ -240,8 +240,8 @@ BigInt_add:
         ldr x19, [sp, X19STORE]
         ldr x20, [sp, X20STORE]
         ldr x21, [sp, X21STORE]
-        ldr x22, [sp, X22STORE]
-        ldr x23, [sp, X23STORE]
+        //ldr x22, [sp, X22STORE]
+        //ldr x23, [sp, X23STORE]
         ldr x24, [sp, X24STORE]
         ldr x25, [sp, X25STORE]
 
@@ -281,8 +281,8 @@ BigInt_add:
         ldr x19, [sp, X19STORE]
         ldr x20, [sp, X20STORE]
         ldr x21, [sp, X21STORE]
-        ldr x22, [sp, X22STORE]
-        ldr x23, [sp, X23STORE]
+        //ldr x22, [sp, X22STORE]
+        //ldr x23, [sp, X23STORE]
         ldr x24, [sp, X24STORE]
         ldr x25, [sp, X25STORE]
 
