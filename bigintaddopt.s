@@ -180,7 +180,7 @@ BigInt_add:
     ble endif2
 
     // memset(oSum->aulDigits, 0, MAX_DIGITS * sizeof(unsigned long));
-    add x0, OSUM, AULDIGITS // prepare to pass oSum->aulDigits (not sure if works)
+    add x0, OSUM, AULDIGITS // prepare to pass oSum->aulDigits 
   
     // preparing to pass 0: assuming that 0 is treated as a long
     mov x1, 0 
@@ -247,7 +247,7 @@ BigInt_add:
     mov x0, OADDEND2
     add x0, x0, AULDIGITS // idea for optimization: add x0, OADDEND2, AULDIGITS
     mov x1, LINDEX
-    ldr x0, [x0, x1, lsl 3]  // x0 is the value of oAddend2->aulDigits[lIndex]
+    ldr x0, [x0, x1, lsl 3]  // x0 is val of oAddend2->aulDigits[lIndex]
     // idea for optimization: get rid of the above
     // x0 is still oAddend2->aulDigits[lIndex]
     // x2 is still ulSum
@@ -284,7 +284,7 @@ BigInt_add:
     bne endif6
 
     // return FALSE;
-    
+
     // Epilog and return lLarger
         // the callee should save the return value in x0
         mov     x0, FALSE
