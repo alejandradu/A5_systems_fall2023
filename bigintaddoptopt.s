@@ -155,22 +155,22 @@ BigInt_add:
 
     // FROM ulSum += oAddend2->aulDigits[lIndex];
     // REALLY get the value at oAddend2->aulDigits[lIndex]
-    add x1, OADDEND2, AULDIGITS
-    mov x2, LINDEX
-    lsl x2, x2, 3
-    add x1, x1, x2
-    ldr x1, [x1]
+    add x2, OADDEND2, AULDIGITS
+    mov x3, LINDEX
+    lsl x3, x3, 3
+    add x2, x2, x3
+    ldr x2, [x2]
 
     // oAddend1->aulDigits[lIndex] + oAddend2->aulDigits[lIndex]
     // IF INDEX == 0, USE ADDS. ELSE USE ADCS.
     cmp LINDEX, 0
     beq endif3
 
-    adcs x2, x0, x1   // C + SUM + x2, also sets flag C
+    adcs x3, x0, x2   // C + SUM + x2, also sets flag C
 
     endif3: //lindex = 0
 
-    adds x2, x0, x1     // Sets C = 1 for unsigned overflow
+    adds x3, x0, x2     // Sets C = 1 for unsigned overflow
 
     // if (ulSum >= oAddend1->aulDigits[lIndex]) goto endif3;
         // x0 is still oAddend1->aulDigits[lIndex]
@@ -208,7 +208,7 @@ BigInt_add:
     mov x1, LINDEX
     lsl x1, x1, 3
     add x0, x0, x1      // x0 is the address of oSum->aulDigits[lIndex]
-    str x2, [x0]
+    str x3, [x0]
 
     // lIndex++;
     add LINDEX, LINDEX, 1
