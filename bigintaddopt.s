@@ -74,7 +74,7 @@ BigInt_larger:
     cmp LLENGTH1, LLENGTH2
     ble else1
 
-    // lLarger = lLength1; POT BUG - only copy but not the pointer?
+    // lLarger = lLength1; 
     mov LLARGER, LLENGTH1  
 
     // goto endif1;
@@ -314,7 +314,7 @@ BigInt_add:
 
     // oSum->aulDigits[lSumLength] = 1;
     mov x1, OSUM
-    add x1, x1, AULDIGITS   // POT BUG changed to modify x1
+    add x1, x1, AULDIGITS 
     mov x2, LSUMLENGTH
     lsl x2, x2, 3
     add x1, x1, x2
