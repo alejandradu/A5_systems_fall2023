@@ -75,9 +75,9 @@ BigInt_add:
     str x25, [sp, X25STORE]
 
     // save the values of parameters into registers
-    mov OADDEND1, x0    // THIS IS pointer to 
-    mov OADDEND2, x1    // THIS IS pointer to LLENGTH2
     mov OSUM, x2
+    mov OADDEND1, x0
+    mov OADDEND2, x1
 
     // unsigned long ulCarry;
     // unsigned long ulSum;
@@ -232,7 +232,7 @@ BigInt_add:
     // if (ulCarry != 1) goto endif5;
     // REALLY if C == 0 goto endif5
     // TAKEN cmp ULCARRY, 1
-    blo endif5
+    bcc endif5
 
     // if (lSumLength != MAX_DIGITS) goto endif6;
     cmp LSUMLENGTH, MAX_DIGITS
