@@ -146,11 +146,13 @@ BigInt_add:
     // bcs: branch if there's unsigned overflow
     bcs isOverflow
     mov ULSUM, 0  // if the c flag is 0, set ulSum to 0,
+    b noOverflow
 
     isOverflow:
     mov ULSUM, 1  // if the c flag is 1, set ulSum to 1,
     //------ replacement ends--------
 
+    noOverflow:
 
     // ulCarry = 0;
     // replaced by the below      mov ULCARRY, 0
