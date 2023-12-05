@@ -138,7 +138,7 @@ BigInt_add:
     // not needed mov ULCARRY, 0
     adcs xzr, xzr, xzr // c flag will be set to 0
 
-    bhs loop1End
+    bge loop1End
 
     loop1:
 
@@ -242,7 +242,7 @@ BigInt_add:
     add x0, x0, x1      // x0 is the address of oSum->aulDigits[lIndex]
     str ULSUM, [x0]
 
-    blo loop1
+    blt loop1
 
     loop1End:
 
