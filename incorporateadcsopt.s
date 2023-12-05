@@ -138,7 +138,7 @@ BigInt_add:
     // not needed mov ULCARRY, 0
     adcs xzr, xzr, xzr // c flag will be set to 0
 
-    bge loop1End
+    bhs loop1End
 
     loop1:
 
@@ -163,7 +163,7 @@ BigInt_add:
     // lIndex++;
     add LINDEX, LINDEX, 1
 
-    //if (lIndex < lSumLength) goto loop1 (goto loop1 showing up later);
+    //if (lIndex < lSumLength) goto loop1 (go to );
     cmp LINDEX, LSUMLENGTH
 
     // ulCarry = 0;
@@ -242,7 +242,7 @@ BigInt_add:
     add x0, x0, x1      // x0 is the address of oSum->aulDigits[lIndex]
     str ULSUM, [x0]
 
-    blt loop1
+    blo loop1
 
     loop1End:
 
