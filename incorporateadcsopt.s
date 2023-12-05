@@ -313,14 +313,14 @@ BigInt_add:
     // if we detect a carry:
     //if (lIndex < lSumLength) goto loop1;
     cmp LINDEX, LSUMLENGTH
-    blt loop1StartWithCarry
+    blo loop1StartWithCarry  //HERE
     b loop1EndWithCarry
 
     noCarryDetected:
     // if we did not detect a carry:
     //if (lIndex < lSumLength) goto loop1;
     cmp LINDEX, LSUMLENGTH
-    blt loop1StartNoCarry
+    blo loop1StartNoCarry  //HERE
     b loop1EndNoCarry
 
 
@@ -362,15 +362,8 @@ BigInt_add:
     // we are not using branch depending on c flags anymore
 
     // if (lSumLength != MAX_DIGITS) goto endif6;
-    // C SHOULD STAY = 1 IN ANY CASE
     cmp LSUMLENGTH, MAX_DIGITS
     bne endif6
-
-    // make carry 1 again
-    mov x5, 1
-    mov x6, 1
-    // //adcs x6, x5, x6
-    adds x6, x5, x6
 
     // return FALSE;
 
@@ -396,12 +389,6 @@ BigInt_add:
         .size   BigInt_add, (. - BigInt_add)
 
     endif6:
-
-    // make carry 1 again
-    mov x5, 1
-    mov x6, 1
-    // //adcs x6, x5, x6
-    adds x6, x5, x6
 
     // oSum->aulDigits[lSumLength] = 1;
     mov x1, OSUM
