@@ -51,7 +51,7 @@
     OADDEND1 .req x21
 
     // Local Variable equivalent registers
-    // ULCARRY .req x22
+    ULCARRY .req x22
     ULSUM   .req x23
     LINDEX  .req x24
     LSUMLENGTH .req x25
@@ -69,7 +69,7 @@ BigInt_add:
     str x19, [sp, X19STORE]
     str x20, [sp, X20STORE]
     str x21, [sp, X21STORE]
-    // str x22, [sp, X22STORE]
+    str x22, [sp, X22STORE]
     str x23, [sp, X23STORE]
     str x24, [sp, X24STORE]
     str x25, [sp, X25STORE]
@@ -137,8 +137,10 @@ BigInt_add:
     adcs xzr, xzr, xzr
 
     //if (lIndex >= lSumLength) goto loop1End;
-    cmp LINDEX, LSUMLENGTH
-    bge loop1End
+    // cmp LINDEX, LSUMLENGTH if true, c == 1
+    cmp LSUMLENGTH, LINDEX // if right condition TRUE, c == 0
+    // bge loop1End 
+    bcc loop1End // if carry is 0 (will be) - also sets right initial C
 
     loop1:
 
@@ -178,15 +180,16 @@ BigInt_add:
     // adcs ULSUM, ULSUM, x1
 
     // IF INDEX == 0, USE ADDS. ELSE USE ADCS.
-    cmp LINDEX, 0     // CHECK THIS
-    beq endif3
+    // cmp LINDEX, 0     if true, c== 1
+    //beq endif3
+    // CARRY ALREADY STARTS AT 0 BY IF MODIFIED ABOVE
 
     adcs ULSUM, x1, x0   
     // x1 + x0 + C, sets the initial flag
 
-    endif3: // LINDEX = 0
+    //endif3: // LINDEX = 0
 
-    adds ULSUM, x1, x0    // sets the initial flag
+    // adds ULSUM, x1, x0    // sets the initial flag
 
     // if (ulSum >= oAddend1->aulDigits[lIndex]) goto endif3;
         // x0 is still oAddend1->aulDigits[lIndex]
@@ -230,7 +233,33 @@ BigInt_add:
     add LINDEX, LINDEX, 1
 
     //if (lIndex < lSumLength) goto loop1;
-    cmp LINDEX, LSUMLENGTH
+    // SUBS WZR, Ws|WSP, imm
+    // SUBTRACT 0 - CARRY_FLAG
+    
+    // NEED TO WRITE COMPARE TWICE
+    // if C == 1: 
+        // cmp lindex, lsumlength
+        // if cmp true, c == 1 (fine, can GO TO GO BACK)
+        // else
+            // GO TO
+            // something that sets c = 1
+            // go to OUT OF LOOP
+    // else C == 0
+        // cmp lindex, lsumlength
+        // if cmp true, c == 1 (needs to GO BACK)
+            // GO TO
+            // something that sets c = 0
+            // go to loop
+        // else c == 0 (fine, GO TO GET OUT)
+
+
+    // cmp LINDEX, LSUMLENGTH
+
+    // TRUE, had c = 1 (FINE)
+    // TRUE, had c =0
+    // FALSE, had c = 1
+    // FALSE, had c = 0 (FINE)
+
     blt loop1
 
     loop1End:
@@ -238,6 +267,7 @@ BigInt_add:
     // if (ulCarry != 1) goto endif5;
     // REALLY if C == 0 goto endif5
     // TAKEN cmp ULCARRY, 1
+    // THE LAST COMPARE MESSED UP C == 1. RESTORE
     bcc endif5
 
     // if (lSumLength != MAX_DIGITS) goto endif6;
@@ -256,7 +286,7 @@ BigInt_add:
         ldr x19, [sp, X19STORE]
         ldr x20, [sp, X20STORE]
         ldr x21, [sp, X21STORE]
-        //ldr x22, [sp, X22STORE]
+        ldr x22, [sp, X22STORE]
         ldr x23, [sp, X23STORE]
         ldr x24, [sp, X24STORE]
         ldr x25, [sp, X25STORE]
@@ -297,7 +327,7 @@ BigInt_add:
         ldr x19, [sp, X19STORE]
         ldr x20, [sp, X20STORE]
         ldr x21, [sp, X21STORE]
-        //ldr x22, [sp, X22STORE]
+        ldr x22, [sp, X22STORE]
         ldr x23, [sp, X23STORE]
         ldr x24, [sp, X24STORE]
         ldr x25, [sp, X25STORE]
