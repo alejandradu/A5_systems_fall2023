@@ -163,7 +163,7 @@ BigInt_add:
     // lIndex++;
     add LINDEX, LINDEX, 1
 
-    //if (lIndex < lSumLength) goto loop1 (go to );
+    //if (lIndex < lSumLength) goto loop1 (goto loop1 showing up later);
     cmp LINDEX, LSUMLENGTH
 
     // ulCarry = 0;
