@@ -129,7 +129,7 @@ BigInt_add:
 
     // ulCarry = 0;
     // not needed mov ULCARRY, 0
-    adcs xzr, xzr, xzr // c flag will be set to 0
+    // adcs xzr, xzr, xzr // c flag will be set to 0
 
     // just checking what the c flag is rn
     //bcc checkifnocarryy
@@ -171,7 +171,7 @@ BigInt_add:
 
     loop1StartNoCarry:
     // setting the c flag back to zero in case it is changed by cmp
-    adds x0, xzr, xzr // THIS MIGHT HAVE BEEN IT
+    adds x5, xzr, xzr // THIS MIGHT HAVE BEEN IT
     // then start the loop
     b loopBody
 
@@ -336,7 +336,7 @@ BigInt_add:
     // setting the c flag to 0 incase compare messed up the c flag
     //adcs xzr, xzr, xzr // c flag will be set to 0 since 
     // an overflow will never occur with 0 adding to 0
-    adds xzr, xzr, xzr
+    adds x5, xzr, xzr  // HERE TOO
 
     CarryCorrectOver:
     // ------ loop ends -----------------------
