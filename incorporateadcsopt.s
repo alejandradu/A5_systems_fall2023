@@ -140,26 +140,26 @@ BigInt_add:
     mov LINDEX, 0
 
 
-    bcc noCarrybefCompare1
+    //bcc noCarrybefCompare1
 
     // if the carry flag is 1:
     //if (lIndex >= lSumLength) goto loop1End;
-    cmp LINDEX, LSUMLENGTH
-    bge loop1EndWithCarry
+    //cmp LINDEX, LSUMLENGTH
+    //bge loop1EndWithCarry
     // setting the c flag back to one in case it is 
     // changed by cmp
-    mov x5, 1
-    mov x6, 1
-    adcs x6, x5, x6
+   //mov x5, 1
+    //mov x6, 1
+   // adcs x6, x5, x6
     // just checking what the c flag is rn
-    bcc checkifnocarryz
-    mov ULCARRY, 0
-    checkifnocarryz:
-    b loop1StartWithCarry
+    //bcc checkifnocarryz
+    //mov ULCARRY, 0
+    //checkifnocarryz:
+    //b loop1StartWithCarry
 
     // if the carry flag is 0:
-    noCarrybefCompare1:
-        //if (lIndex >= lSumLength) goto loop1End;
+    // noCarrybefCompare1:
+    //if (lIndex >= lSumLength) goto loop1End;
     cmp LINDEX, LSUMLENGTH
     bge loop1EndNoCarry
     // setting the c flag back to zero in case it is 
