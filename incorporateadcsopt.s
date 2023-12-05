@@ -127,23 +127,22 @@ BigInt_add:
 
     endif2:
 
-    // ulCarry = 0;
-    // not needed mov ULCARRY, 0
-    adcs xzr, xzr, xzr // c flag will be set to 0
-
-    // just checking what the c flag is rn
-    bcc checkifnocarry
-    mov ULCARRY, 0
-    checkifnocarry:
-
     // lIndex = 0;
     mov LINDEX, 0
 
     //if (lIndex >= lSumLength) goto loop1End;
     cmp LINDEX, LSUMLENGTH
+
+    // swapping the sequence so that lIndex does not impact ulCarry
+    // ulCarry = 0;
+    // not needed mov ULCARRY, 0
+    adcs xzr, xzr, xzr // c flag will be set to 0
+
     bge loop1End
 
     loop1:
+
+  
 
     // ulSum = ulCarry; 
     // replaced by the below    mov ULSUM,  ULCARRY
@@ -159,23 +158,21 @@ BigInt_add:
 
     noOverflow:
 
+    // putting it at the top yet after setting ulSum
+    // so that cmp does not mess up with the c flag
+    // lIndex++;
+    add LINDEX, LINDEX, 1
+
+    //if (lIndex < lSumLength) goto loop1 (goto loop1 showing up later);
+    cmp LINDEX, LSUMLENGTH
+
     // ulCarry = 0;
     // replaced by the below      mov ULCARRY, 0
     //------ replacement start--------
     // setting the c flag to 0:
 
-    // just checking what the c flag is rn
-    bcc checkifnocarry2
-    mov ULCARRY, 0
-    checkifnocarry2:
-
     adcs xzr, xzr, xzr // c flag will be set to 0 since 
     // an overflow will never occur with 0 adding to 0
-    
-    // just checking what the c flag is rn
-    bcc checkifnocarry3
-    mov ULCARRY, 0
-    checkifnocarry3:
 
     //------ replacement ends--------
 
@@ -187,10 +184,6 @@ BigInt_add:
     ldr x0, [x0]
     // replaced by below  add ULSUM, ULSUM, x0
     adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
-    // just checking what the c flag is rn
-    bcc checkifnocarry5
-    mov ULCARRY, 0
-    checkifnocarry5:
 
     // -----------below commented out (not needed after using c flag----------
 
@@ -221,10 +214,6 @@ BigInt_add:
     add x0, x0, x1
     ldr x0, [x0]
     adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
-    // just checking what the c flag is rn
-    bcc checkifnocarry4
-    mov ULCARRY, 0
-    checkifnocarry4:
 
 
     // --------------the below are commented out (not necessary after c flag)
@@ -253,11 +242,6 @@ BigInt_add:
     add x0, x0, x1      // x0 is the address of oSum->aulDigits[lIndex]
     str ULSUM, [x0]
 
-    // lIndex++;
-    add LINDEX, LINDEX, 1
-
-    //if (lIndex < lSumLength) goto loop1;
-    cmp LINDEX, LSUMLENGTH
     blt loop1
 
     loop1End:
