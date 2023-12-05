@@ -32,7 +32,7 @@
 //--------------------------------------------------------------
 
     // must be a multiple of 16
-    .equ BIGINT_ADD_STACK_BYTECOUNT, 64   // CHECK THIS
+    .equ BIGINT_ADD_STACK_BYTECOUNT, 64   
 
     // local variable stack offsets:
     .equ X19STORE, 8
@@ -86,6 +86,8 @@ BigInt_add:
 
     // lSumLength = BigInt_larger(oAddend1->lLength, oAddend2->lLength);
 
+    // --------- INSERTION
+
     //if (lLength1 <= lLength2) goto else1; assuming signed long
     ldr x0, [OADDEND1]
     ldr x1, [OADDEND2]
@@ -93,7 +95,7 @@ BigInt_add:
     ble else1
 
     // lLarger = lLength1; 
-    mov LSUMLENGTH, x0  
+    mov LSUMLENGTH, [x0]  
 
     // goto endif1;
     b endif1
@@ -101,9 +103,10 @@ BigInt_add:
     else1:
 
     // lLarger = lLength2;
-    mov LSUMLENGTH, x1
+    mov LSUMLENGTH, [x1]
 
     endif1:
+    // --------- END INSERTION
 
     // if (oSum->lLength <= lSumLength) goto endif2;
     ldr x0, [OSUM]
