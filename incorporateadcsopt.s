@@ -171,9 +171,9 @@ BigInt_add:
 
     loop1StartNoCarry:
     // setting the c flag back to zero in case it is changed by cmp
-    // adds xzr, xzr, xzr // THIS MIGHT HAVE BEEN IT
+    adds xzr, xzr, xzr // THIS MIGHT HAVE BEEN IT
     // then start the loop
-    clc
+    // clc
     b loopBody
 
     loop1StartWithCarry:
@@ -181,14 +181,14 @@ BigInt_add:
     // chancged by cmp
         // setting the c flag back to one in case it is 
     // changed by cmp
-    //mov x5, 111
-    //mov x6, 001
-    //adds x6, x5, x6
+    mov x5, 1
+    mov x6, 1
+    adds x6, x5, x6
     // just checking what the c flag is rn
     //bcc checkifnocarryx
     //mov ULCARRY, 0
     //checkifnocarryx:
-    stc
+    //stc
 
     // send to loop that does additions with the right c flag
 
@@ -328,19 +328,19 @@ BigInt_add:
     loop1EndWithCarry:
     // setting the c flag to 1 incase compare messed up the c flag
      // changed by cmp
-    // mov x5, 111
-    // mov x6, 001
+    mov x5, 1
+    mov x6, 1
     // //adcs x6, x5, x6
-    // adds x6, x5, x6
-    stc
+    adds x6, x5, x6
+    // stc
     b CarryCorrectOver
 
     loop1EndNoCarry:
     // setting the c flag to 0 incase compare messed up the c flag
     //adcs xzr, xzr, xzr // c flag will be set to 0 since 
     // an overflow will never occur with 0 adding to 0
-    //adds xzr, xzr, xzr  // HERE TOO
-    clc
+    adds xzr, xzr, xzr  // HERE TOO
+    // clc
 
     CarryCorrectOver:
     // ------ loop ends -----------------------
