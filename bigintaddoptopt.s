@@ -133,16 +133,16 @@ BigInt_add:
     // lIndex = 0;
     mov LINDEX, 0
 
+    // set C == 0
+    adcs xzr, xzr, xzr
+
     //if (lIndex >= lSumLength) goto loop1End;
     cmp LINDEX, LSUMLENGTH
     bge loop1End
 
-    // set C == 0
-    adcs xzr, xzr, xzr
-
     loop1:
 
-    mov ULSUM, 0
+    // mov ULSUM, 0
 
     // ulSum = ulCarry;
     // TAKEN mov ULSUM,  ULCARRY - adds will already consider C
