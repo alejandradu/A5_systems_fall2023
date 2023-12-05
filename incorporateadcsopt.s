@@ -132,9 +132,9 @@ BigInt_add:
     adcs xzr, xzr, xzr // c flag will be set to 0
 
     // just checking what the c flag is rn
-    bcc checkifnocarry
+    bcc checkifnocarryy
     mov ULCARRY, 0
-    checkifnocarry:
+    checkifnocarryy:
 
     // lIndex = 0;
     mov LINDEX, 0
@@ -152,9 +152,9 @@ BigInt_add:
     mov x6, 1
     adcs x6, x5, x6
     // just checking what the c flag is rn
-    bcc checkifnocarry
+    bcc checkifnocarryz
     mov ULCARRY, 0
-    checkifnocarry:
+    checkifnocarryz:
     b loop1
 
     // if the carry flag is 0:
@@ -184,9 +184,9 @@ BigInt_add:
     mov x6, 1
     adcs x6, x5, x6
     // just checking what the c flag is rn
-    bcc checkifnocarry
+    bcc checkifnocarryx
     mov ULCARRY, 0
-    checkifnocarry:
+    checkifnocarryx:
 
     loopStartCarryCheckOver:
 
