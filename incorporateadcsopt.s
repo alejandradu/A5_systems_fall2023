@@ -130,9 +130,10 @@ BigInt_add:
     // ulCarry = 0;
     // not needed mov ULCARRY, 0
     adcs xzr, xzr, xzr // c flag will be set to 0
+
+    // just checking what the c flag is rn
     bcc checkifnocarry
     mov ULCARRY, 0
-
     checkifnocarry:
 
     // lIndex = 0;
@@ -162,6 +163,8 @@ BigInt_add:
     // replaced by the below      mov ULCARRY, 0
     //------ replacement start--------
     // setting the c flag to 0:
+
+    // just checking what the c flag is rn
     bcc checkifnocarry2
     mov ULCARRY, 0
     checkifnocarry2:
@@ -169,6 +172,7 @@ BigInt_add:
     adcs xzr, xzr, xzr // c flag will be set to 0 since 
     // an overflow will never occur with 0 adding to 0
     
+    // just checking what the c flag is rn
     bcc checkifnocarry3
     mov ULCARRY, 0
     checkifnocarry3:
