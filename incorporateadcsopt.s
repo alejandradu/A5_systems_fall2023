@@ -163,14 +163,15 @@ BigInt_add:
     cmp LINDEX, LSUMLENGTH
     bge loop1EndNoCarry
     // c must be 0, make sure it is (always enter the loop with 0)
-    adcs xzr, xzr, xzr 
+    //adcs xzr, xzr, xzr 
+    // adds xzr, xzr, xzr
     b loop1StartNoCarry
 
     // --------loop starts --------------
 
     loop1StartNoCarry:
     // setting the c flag back to zero in case it is changed by cmp
-    adds xzr, xzr, xzr 
+    adds x0, xzr, xzr // THIS MIGHT HAVE BEEN IT
     // then start the loop
     b loopBody
 
