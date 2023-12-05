@@ -95,7 +95,7 @@ BigInt_add:
     ble else1
 
     // lLarger = lLength1; 
-    mov LSUMLENGTH, [x0]  
+    mov LSUMLENGTH, x0
 
     // goto endif1;
     b endif1
@@ -103,7 +103,7 @@ BigInt_add:
     else1:
 
     // lLarger = lLength2;
-    mov LSUMLENGTH, [x1]
+    mov LSUMLENGTH, x1
 
     endif1:
     // --------- END INSERTION
@@ -207,7 +207,7 @@ BigInt_add:
 
     //if (lIndex < lSumLength) goto loop1;
     cmp LINDEX, LSUMLENGTH
-    ble loop1
+    blt loop1
 
     loop1End:
 
@@ -282,3 +282,4 @@ BigInt_add:
         ret
 
         .size   BigInt_add, (. - BigInt_add)
+        
