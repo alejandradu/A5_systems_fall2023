@@ -332,6 +332,12 @@ BigInt_add:
     mov x6, 1
     // //adcs x6, x5, x6
     adds x6, x5, x6
+
+    // just checking what the c flag is rn
+    bcc checkifnocarryy
+    mov ULCARRY, 0
+    checkifnocarryy:
+
     // stc
     b CarryCorrectOver
 
