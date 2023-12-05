@@ -186,7 +186,7 @@ BigInt_add:
     add x0, x0, x1
     ldr x0, [x0]
     // replaced by below  add ULSUM, ULSUM, x0
-    adcs ULSUM, ULSUM, x0 // now c flag has the information of overflow
+    adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
 
     // -----------below commented out (not needed after using c flag----------
 
@@ -216,7 +216,7 @@ BigInt_add:
     lsl x1, x1, 3
     add x0, x0, x1
     ldr x0, [x0]
-    adcs ULSUM, ULSUM, x0 // now c flag has the information of overflow
+    adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
 
 
     // --------------the below are commented out (not necessary after c flag)
