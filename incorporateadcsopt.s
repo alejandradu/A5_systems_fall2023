@@ -139,11 +139,56 @@ BigInt_add:
     // lIndex = 0;
     mov LINDEX, 0
 
+
+    bcc noCarrybefCompare1
+
+    // if the carry flag is 1:
     //if (lIndex >= lSumLength) goto loop1End;
     cmp LINDEX, LSUMLENGTH
-    bge loop1End
+    bge loop1EndWithCarry
+    // setting the c flag back to one in case it is 
+    // changed by cmp
+    mov x5, 1
+    mov x6, 1
+    adcs x6, x5, x6
+    // just checking what the c flag is rn
+    bcc checkifnocarry
+    mov ULCARRY, 0
+    checkifnocarry:
+    b loop1
 
-    loop1:
+    // if the carry flag is 0:
+    noCarrybefCompare1:
+        //if (lIndex >= lSumLength) goto loop1End;
+    cmp LINDEX, LSUMLENGTH
+    bge loop1EndNoCarry
+    // setting the c flag back to zero in case it is 
+    // changed by cmp
+    adcs xzr, xzr, xzr // c flag will be set to 0
+
+    // --------loop starts --------------
+
+    loop1StartNoCarry:
+    // setting the c flag back to zero in case it is
+    // changed by cmp
+    adcs xzr, xzr, xzr // c flag will be set to 0
+    // then start the loop
+    b loopStartCarryCheckOver
+
+    loop1StartWithCarry:
+    // setting the c flag back to one in case it is
+    // chancged by cmp
+        // setting the c flag back to one in case it is 
+    // changed by cmp
+    mov x5, 1
+    mov x6, 1
+    adcs x6, x5, x6
+    // just checking what the c flag is rn
+    bcc checkifnocarry
+    mov ULCARRY, 0
+    checkifnocarry:
+
+    loopStartCarryCheckOver:
 
     // ulSum = ulCarry; 
     // replaced by the below    mov ULSUM,  ULCARRY
@@ -256,12 +301,37 @@ BigInt_add:
     // lIndex++;
     add LINDEX, LINDEX, 1
 
+    bcc noCarryDetected
+    // if we detect a carry:
     //if (lIndex < lSumLength) goto loop1;
     cmp LINDEX, LSUMLENGTH
-    blt loop1
+    blt loop1StartWithCarry
+    b loop1EndWithCarry
 
-    loop1End:
+    noCarryDetected:
+    // if we did not detect a carry:
+    //if (lIndex < lSumLength) goto loop1;
+    cmp LINDEX, LSUMLENGTH
+    blt loop1StartNoCarry
+    b loop1EndNoCarry
 
+
+
+    loop1EndWithCarry:
+    // setting the c flag to 1 incase compare messed up the c flag
+     // changed by cmp
+    mov x5, 1
+    mov x6, 1
+    adcs x6, x5, x6
+    b CarryCorrectOver
+
+    loop1EndNoCarry:
+    // setting the c flag to 0 incase compare messed up the c flag
+    adcs xzr, xzr, xzr // c flag will be set to 0 since 
+    // an overflow will never occur with 0 adding to 0
+
+    CarryCorrectOver:
+    // ------ loop ends -----------------------
 
     // below adapted for the cflag
     // if (ulCarry != 1) goto endif5;
@@ -269,6 +339,9 @@ BigInt_add:
     // (might need to change to signed overflow)
     // not needed: cmp ULCARRY, 1
     bcc endif5 // branch if carry clear
+
+    // no need to worry about c flags afterwards since 
+    // we are not using branch depending on c flags anymore
 
     // if (lSumLength != MAX_DIGITS) goto endif6;
     cmp LSUMLENGTH, MAX_DIGITS
