@@ -155,7 +155,7 @@ BigInt_add:
     bcc checkifnocarryz
     mov ULCARRY, 0
     checkifnocarryz:
-    b loop1
+    b loop1StartWithCarry
 
     // if the carry flag is 0:
     noCarrybefCompare1:
