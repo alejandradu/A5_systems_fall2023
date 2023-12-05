@@ -137,6 +137,9 @@ BigInt_add:
     cmp LINDEX, LSUMLENGTH
     bge loop1End
 
+    // set C == 0
+    adcs xzr, xzr, xzr
+
     loop1:
 
     mov ULSUM, 0
