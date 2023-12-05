@@ -188,9 +188,9 @@ BigInt_add:
     // replaced by below  add ULSUM, ULSUM, x0
     adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
     // just checking what the c flag is rn
-    bcc checkifnocarry2
+    bcc checkifnocarry5
     mov ULCARRY, 0
-    checkifnocarry2:
+    checkifnocarry5:
 
     // -----------below commented out (not needed after using c flag----------
 
@@ -222,9 +222,9 @@ BigInt_add:
     ldr x0, [x0]
     adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
     // just checking what the c flag is rn
-    bcc checkifnocarry2
+    bcc checkifnocarry4
     mov ULCARRY, 0
-    checkifnocarry2:
+    checkifnocarry4:
 
 
     // --------------the below are commented out (not necessary after c flag)
