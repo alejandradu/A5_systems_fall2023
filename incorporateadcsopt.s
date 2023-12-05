@@ -161,7 +161,8 @@ BigInt_add:
     // noCarrybefCompare1:
     //if (lIndex >= lSumLength) goto loop1End;
     cmp LINDEX, LSUMLENGTH
-    bge loop1EndNoCarry
+    //bge loop1EndNoCarry
+    bge endif5
     // c must be 0, make sure it is (always enter the loop with 0)
     //adcs xzr, xzr, xzr 
     // adds xzr, xzr, xzr
