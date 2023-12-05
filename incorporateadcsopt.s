@@ -313,42 +313,44 @@ BigInt_add:
     // if we detect a carry:
     //if (lIndex < lSumLength) goto loop1;
     cmp LINDEX, LSUMLENGTH
-    blo loop1StartWithCarry  //HERE
+    blt loop1StartWithCarry  //HERE
     b loop1EndWithCarry
 
     noCarryDetected:
     // if we did not detect a carry:
     //if (lIndex < lSumLength) goto loop1;
     cmp LINDEX, LSUMLENGTH
-    blo loop1StartNoCarry  //HERE
-    b loop1EndNoCarry
+    blt loop1StartNoCarry  //HERE
+    //b loop1EndNoCarry
+    b endif5  // directly to end w carry clear
 
 
 
     loop1EndWithCarry:
     // setting the c flag to 1 incase compare messed up the c flag
      // changed by cmp
-    mov x5, 1
-    mov x6, 1
-    // //adcs x6, x5, x6
-    adds x6, x5, x6
+    //mov x5, 1
+    //mov x6, 1
+    //// //adcs x6, x5, x6
+    //adds x6, x5, x6
 
     // just checking what the c flag is rn
-    bcc checkifnocarryy
-    mov ULCARRY, 0
-    checkifnocarryy:
+    // bcc checkifnocarryy
+    // mov ULCARRY, 0
+    // checkifnocarryy:
 
     // stc
-    b CarryCorrectOver
+    //b CarryCorrectOver
 
-    loop1EndNoCarry:
+    //loop1EndNoCarry:
     // setting the c flag to 0 incase compare messed up the c flag
     //adcs xzr, xzr, xzr // c flag will be set to 0 since 
     // an overflow will never occur with 0 adding to 0
-    adds xzr, xzr, xzr  // HERE TOO
+    //adds xzr, xzr, xzr  // HERE TOO
     // clc
+    //b endif5  // directly go to end with carry clear
 
-    CarryCorrectOver:
+    //CarryCorrectOver:
     // ------ loop ends -----------------------
 
     // below adapted for the cflag
@@ -356,7 +358,7 @@ BigInt_add:
     // branch to endif5 if there's no unsigned overflow 
     // (might need to change to signed overflow)
     // not needed: cmp ULCARRY, 1
-    bcc endif5 // branch if carry clear
+    //bcc endif5 // branch if carry clear
 
     // no need to worry about c flags afterwards since 
     // we are not using branch depending on c flags anymore
