@@ -128,7 +128,8 @@ BigInt_add:
     endif2:
 
     // ulCarry = 0;
-    mov ULCARRY, 0
+    // not needed mov ULCARRY, 0
+    adcs xzr, xzr, xzr // c flag will be set to 0
 
     // lIndex = 0;
     mov LINDEX, 0
