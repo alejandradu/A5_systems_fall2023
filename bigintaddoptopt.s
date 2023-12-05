@@ -139,6 +139,8 @@ BigInt_add:
 
     loop1:
 
+    mov ULSUM, 0
+
     // ulSum = ulCarry;
     // TAKEN mov ULSUM,  ULCARRY - adds will already consider C
 
