@@ -153,6 +153,11 @@ BigInt_add:
     mov x6, 1
     adds x6, x5, x6
 
+    // just checking what the c flag is rn
+    bcc checkifnocarry5
+    mov ULCARRY, 0
+    checkifnocarry5:
+
     loopBody:
 
     //----- original longer verison of impl----------
