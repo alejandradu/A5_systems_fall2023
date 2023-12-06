@@ -127,45 +127,14 @@ BigInt_add:
 
     endif2:
 
-    // ulCarry = 0;
-    // not needed mov ULCARRY, 0
-    // adcs xzr, xzr, xzr // c flag will be set to 0
-
-    // just checking what the c flag is rn
-    //bcc checkifnocarryy
-    //mov ULCARRY, 0
-    //checkifnocarryy:
-
     // lIndex = 0;
     mov LINDEX, 0
 
-
-    //bcc noCarrybefCompare1
-
-    // if the carry flag is 1:
-    //if (lIndex >= lSumLength) goto loop1End;
-    //cmp LINDEX, LSUMLENGTH
-    //bge loop1EndWithCarry
-    // setting the c flag back to one in case it is 
-    // changed by cmp
-   //mov x5, 1
-    //mov x6, 1
-   // adcs x6, x5, x6
-    // just checking what the c flag is rn
-    //bcc checkifnocarryz
-    //mov ULCARRY, 0
-    //checkifnocarryz:
-    //b loop1StartWithCarry
-
-    // if the carry flag is 0:
-    // noCarrybefCompare1:
     //if (lIndex >= lSumLength) goto loop1End;
     cmp LINDEX, LSUMLENGTH
     //bge loop1EndNoCarry
     bge endif5
     // c must be 0, make sure it is (always enter the loop with 0)
-    //adcs xzr, xzr, xzr 
-    // adds xzr, xzr, xzr
     b loop1StartNoCarry
 
     // --------loop starts --------------
@@ -179,55 +148,10 @@ BigInt_add:
 
     loop1StartWithCarry:
     // setting the c flag back to one in case it is
-    // chancged by cmp
-        // setting the c flag back to one in case it is 
     // changed by cmp
     mov x5, 1
     mov x6, 1
     adds x6, x5, x6
-    // just checking what the c flag is rn
-    //bcc checkifnocarryx
-    //mov ULCARRY, 0
-    //checkifnocarryx:
-    //stc
-
-    // send to loop that does additions with the right c flag
-
-    //loopStartCarryCheckOver:
-//
-    //// ulSum = ulCarry; 
-    //// replaced by the below    mov ULSUM,  ULCARRY
-    ////------ replacement start--------
-    //// bcs: branch if there's unsigned overflow
-    //bcs isOverflow
-    //mov ULSUM, 0  // if the c flag is 0, set ulSum to 0,
-    //b noOverflow
-//
-    //isOverflow:
-    //mov ULSUM, 1  // if the c flag is 1, set ulSum to 1,
-    ////------ replacement ends--------
-//
-    //noOverflow:
-//
-    //// ulCarry = 0;
-    //// replaced by the below      mov ULCARRY, 0
-    ////------ replacement start--------
-    //// setting the c flag to 0:
-//
-    //// just checking what the c flag is rn
-    //bcc checkifnocarry2
-    //mov ULCARRY, 0
-    //checkifnocarry2:
-//
-    //adcs xzr, xzr, xzr // c flag will be set to 0 since 
-    //// an overflow will never occur with 0 adding to 0
-    //
-    //// just checking what the c flag is rn
-    //bcc checkifnocarry3
-    //mov ULCARRY, 0
-    //checkifnocarry3:
-
-    //------ replacement ends--------
 
     loopBody:
 
@@ -237,34 +161,7 @@ BigInt_add:
     lsl x1, x1, 3
     add x0, x0, x1
     ldr x0, [x0]
-    // replaced by below  add ULSUM, ULSUM, x0
-    // adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
-    // just checking what the c flag is rn
-    // bcc checkifnocarry5
-    // mov ULCARRY, 0
-    // checkifnocarry5:
 
-    // -----------below commented out (not needed after using c flag----------
-
-    // we don't need the if comparison since we have the c flag
-    // if (ulSum >= oAddend1->aulDigits[lIndex]) goto endif3;
-    // add x0, OADDEND1, AULDIGITS
-    // mov x1, LINDEX
-    // lsl x1, x1, 3
-    // add x0, x0, x1
-    // ldr x0, [x0]      // x0 is the value of oAddend1->aulDigits[lIndex]
-    // FURTHER OPT: get rid of the above
-    // x0 is still oAddend1->aulDigits[lIndex]
-    // x2 is still ulSum
-    //cmp ULSUM, x0
-    //bhs endif3
-
-    // ulCarry = 1;
-    // mov ULCARRY, 1
-
-    // endif3:
-
-    // ------------- end commenting out
 
     // ulSum += oAddend2->aulDigits[lIndex];
     add x1, OADDEND2, AULDIGITS
@@ -272,31 +169,7 @@ BigInt_add:
     lsl x2, x2, 3
     add x1, x1, x2
     ldr x1, [x1]
-    // adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
-    // just checking what the c flag is rn
-    // bcc checkifnocarry4
-    // mov ULCARRY, 0
-    // checkifnocarry4:
     adcs x2, x0, x1  // THIS WILL SET A NEW C TO KEEP
-
-
-    // --------------the below are commented out (not necessary after c flag)
-    // we don't need the if comparison since we now have the c flag
-    // if (ulSum >= oAddend2->aulDigits[lIndex]) goto endif4;
-    // mov x0, OADDEND2
-    // add x0, x0, AULDIGITS // idea for optimization: add x0, OADDEND2, AULDIGITS
-    // mov x1, LINDEX
-    // ldr x0, [x0, x1, lsl 3]  // x0 is val of oAddend2->aulDigits[lIndex]
-    // FURTHER OPT: get rid of the above
-    // x0 is still oAddend2->aulDigits[lIndex]
-    // x2 is still ulSum
-    // cmp ULSUM, x0
-    // bhs endif4
-
-    //  ulCarry = 1;
-    // mov ULCARRY, 1
-
-    // endif4:
 
     // oSum->aulDigits[lIndex] = ulSum;
     mov x0, OSUM
@@ -328,41 +201,6 @@ BigInt_add:
 
 
     loop1EndWithCarry:
-    // setting the c flag to 1 incase compare messed up the c flag
-     // changed by cmp
-    //mov x5, 1
-    //mov x6, 1
-    //// //adcs x6, x5, x6
-    //adds x6, x5, x6
-
-    // just checking what the c flag is rn
-    // bcc checkifnocarryy
-    // mov ULCARRY, 0
-    // checkifnocarryy:
-
-    // stc
-    //b CarryCorrectOver
-
-    //loop1EndNoCarry:
-    // setting the c flag to 0 incase compare messed up the c flag
-    //adcs xzr, xzr, xzr // c flag will be set to 0 since 
-    // an overflow will never occur with 0 adding to 0
-    //adds xzr, xzr, xzr  // HERE TOO
-    // clc
-    //b endif5  // directly go to end with carry clear
-
-    //CarryCorrectOver:
-    // ------ loop ends -----------------------
-
-    // below adapted for the cflag
-    // if (ulCarry != 1) goto endif5;
-    // branch to endif5 if there's no unsigned overflow 
-    // (might need to change to signed overflow)
-    // not needed: cmp ULCARRY, 1
-    //bcc endif5 // branch if carry clear
-
-    // no need to worry about c flags afterwards since 
-    // we are not using branch depending on c flags anymore
 
     // if (lSumLength != MAX_DIGITS) goto endif6;
     cmp LSUMLENGTH, MAX_DIGITS
