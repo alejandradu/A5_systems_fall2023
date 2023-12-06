@@ -76,10 +76,7 @@ BigInt_add:
     // long lSumLength;
 
     // lSumLength = BigInt_larger(oAddend1->lLength, oAddend2->lLength);
-
-    // --------- INSERTION
-
-    //if (lLength1 <= lLength2) goto else1; assuming signed long
+    //if (lLength1 <= lLength2) goto else1; 
     ldr x0, [OADDEND1]
     ldr x1, [OADDEND2]
     cmp x0, x1
@@ -97,12 +94,10 @@ BigInt_add:
     mov LSUMLENGTH, x1
 
     endif1:
-    // --------- END INSERTION
 
     // if (oSum->lLength <= lSumLength) goto endif2;
     ldr x0, [OSUM]
     cmp x0, LSUMLENGTH
-    // FURTHER OPT: not ldr?
     ble endif2
 
     // memset(oSum->aulDigits, 0, MAX_DIGITS * sizeof(unsigned long));
@@ -125,16 +120,14 @@ BigInt_add:
     cmp LINDEX, LSUMLENGTH
     //bge loop1EndNoCarry
     bge endif5
-    // c must be 0, make sure it is (always enter the loop with 0)
-    b loop1StartNoCarry
+    
 
-    // --------loop starts --------------
-
+    // always enter the loop with c flag = 0
     loop1StartNoCarry:
-    // setting the c flag back to zero in case it is changed by cmp
-    adds xzr, xzr, xzr // THIS MIGHT HAVE BEEN IT
+    // setting the c flag back to zero in case it is 
+    // changed by cmp
+    adds xzr, xzr, xzr 
     // then start the loop
-    // clc
     b loopBody
 
     loop1StartWithCarry:
@@ -187,7 +180,6 @@ BigInt_add:
     blt loop1StartNoCarry  //HERE
     //b loop1EndNoCarry
     b endif5  // directly to end w carry clear
-
 
 
     loop1EndWithCarry:
