@@ -176,7 +176,7 @@ BigInt_add:
     lsl x1, x1, 3
     add x0, x0, x1
     ldr x0, [x0]
-    adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
+    adcs ULSUM, ULSUM, x0 // now c flag has the information of overflow
     // just checking what the c flag is rn
     bcc checkifnocarry4
     mov ULCARRY, 0
