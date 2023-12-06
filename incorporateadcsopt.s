@@ -149,9 +149,7 @@ BigInt_add:
     loop1StartWithCarry:
     // setting the c flag back to one in case it is
     // changed by cmp
-    mov x5, 1
-    mov x6, 1
-    adds x6, x5, x6
+    negs xzr, xzr
 
     // just checking what the c flag is rn
     bcc checkifnocarry5
