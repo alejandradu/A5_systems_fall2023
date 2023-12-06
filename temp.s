@@ -160,6 +160,8 @@ BigInt_add:
     add x0, x0, x1
     ldr x0, [x0]
 
+    adcs x3, xzr, x0
+
     // ulSum += oAddend2->aulDigits[lIndex];
     // REALLY get the first value to add (logic same as in opt)
     add x1, OADDEND2, AULDIGITS
@@ -169,7 +171,8 @@ BigInt_add:
     ldr x1, [x1]
 
     // add with C flag, guaranteed to be right
-    adcs x2, x0, x1 
+    //adcs x2, x0, x1 
+    adcs x2, x3, x1
 
     // oSum->aulDigits[lIndex] = ulSum;
     mov x0, OSUM
