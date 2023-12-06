@@ -31,14 +31,14 @@
 // BigInt_T oSum)
 //--------------------------------------------------------------
 
-    // must be a multiple of 16 //
+    // must be a multiple of 16
     .equ BIGINT_ADD_STACK_BYTECOUNT, 64   
 
     // local variable stack offsets:
     .equ X19STORE, 8
     .equ X20STORE, 16
     .equ X21STORE, 24
-    // .equ X22STORE, 32
+    .equ X22STORE, 32
 
     // parameter stack offsets:
     .equ X23STORE, 40
@@ -76,8 +76,8 @@ BigInt_add:
 
     // save the values of parameters into registers
     mov OSUM, x2
-    mov OADDEND1, x0
-    mov OADDEND2, x1
+    mov OADDEND1, x0    // THIS IS pointer to LLENGTH1
+    mov OADDEND2, x1    // THIS IS pointer to LLENGTH2
 
     // unsigned long ulCarry;
     // unsigned long ulSum;
@@ -111,6 +111,7 @@ BigInt_add:
     // if (oSum->lLength <= lSumLength) goto endif2;
     ldr x0, [OSUM]
     cmp x0, LSUMLENGTH
+    // FURTHER OPT: not ldr?
     ble endif2
 
     // memset(oSum->aulDigits, 0, MAX_DIGITS * sizeof(unsigned long));
@@ -126,81 +127,65 @@ BigInt_add:
 
     endif2:
 
-    // ulCarry = 0;
-    // mov ULCARRY, 0  - will use C flag (internal), starts at 0
-    // POT BUG: what is C initialized to?
-
     // lIndex = 0;
     mov LINDEX, 0
 
-    // set C == 0
-    adcs xzr, xzr, xzr
-
     //if (lIndex >= lSumLength) goto loop1End;
-    // cmp LINDEX, LSUMLENGTH if true, c == 1
-    cmp LSUMLENGTH, LINDEX // if right condition TRUE, c == 0
-    // bge loop1End 
-    bcc loop1End // if carry is 0 (will be) - also sets right initial C
+    cmp LINDEX, LSUMLENGTH
+    //bge loop1EndNoCarry
+    bge endif5
+    // c must be 0, make sure it is (always enter the loop with 0)
+    b loop1StartNoCarry
 
-    loop1:
+    // --------loop starts --------------
 
-    // mov ULSUM, 0
+    loop1StartNoCarry:
+    // setting the c flag back to zero in case it is changed by cmp
+    adds xzr, xzr, xzr // THIS MIGHT HAVE BEEN IT
+    // then start the loop
+    // clc
+    b loopBody
 
-    // ulSum = ulCarry;
-    // TAKEN mov ULSUM,  ULCARRY - adds will already consider C
+    loop1StartWithCarry:
+    // setting the c flag back to one in case it is
+    // changed by cmp
+    negs xzr, xzr
 
-    // ulCarry = 0;
-    // TAKEN mov ULCARRY, 0
+    // just checking what the c flag is rn
+    bcc checkifnocarry5
+    mov ULCARRY, 0
+    checkifnocarry5:
 
-    // FROM ulSum += oAddend1->aulDigits[lIndex];
-    add x0, OADDEND1, AULDIGITS
-    mov x1, LINDEX
-    lsl x1, x1, 3
-    add x0, x0, x1   // this gets pointer to value at index
-    ldr x0, [x0]     // this stores the value at corresponding pointer'
+    loopBody:
 
-    // IF INDEX == 0, USE ADDS. ELSE USE ADCS.
-    //cmp LINDEX, 0
-    //beq endif3
-//
-    //adcs ULSUM, x1, x0
-//
-    //endif3:
-//
-    //adds ULSUM, x1, x0    // sets the initial flag
+    //----- original longer verison of impl----------
 
-    // FROM ulSum += oAddend2->aulDigits[lIndex];
-    add x1, OADDEND2, AULDIGITS
-    mov x2, LINDEX
-    lsl x2, x2, 3
-    add x1, x1, x2
-    ldr x1, [x1]
+    // ulSum = ulCarry; 
+    // replaced by the below    mov ULSUM,  ULCARRY
+    //------ replacement start--------
+    // bcs: branch if there's unsigned overflow
+    // bcs isOverflow
+    // mov ULSUM, 0  // if the c flag is 0, set ulSum to 0,
+    // b noOverflow
 
-    // C will always be set
-    // adcs ULSUM, ULSUM, x1
+    // isOverflow:
+    // mov ULSUM, 1  // if the c flag is 1, set ulSum to 1,
+    //------ replacement ends--------
 
-    // IF INDEX == 0, USE ADDS. ELSE USE ADCS.
-    // cmp LINDEX, 0     if true, c== 1
-    //beq endif3
-    // CARRY ALREADY STARTS AT 0 BY IF MODIFIED ABOVE
+    // noOverflow:
 
-    adcs ULSUM, x1, x0   
-    // x1 + x0 + C, sets the initial flag
-
-    //endif3: // LINDEX = 0
-
-    // adds ULSUM, x1, x0    // sets the initial flag
-
-    // if (ulSum >= oAddend1->aulDigits[lIndex]) goto endif3;
-        // x0 is still oAddend1->aulDigits[lIndex]
-        // x2 is still ulSum
-    // TAKEN cmp ULSUM, x0
-    // TAKEN bhs endif3
-
-    //ulCarry = 1;
-    // TAKEN mov ULCARRY, 1
-
-    // TAKEN endif3:
+    // ulSum += oAddend1->aulDigits[lIndex];
+    // add x0, OADDEND1, AULDIGITS
+    // mov x1, LINDEX
+    // lsl x1, x1, 3
+    // add x0, x0, x1
+    // ldr x0, [x0]
+    // replaced by below  add ULSUM, ULSUM, x0
+    // adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
+    // just checking what the c flag is rn
+    // bcc checkifnocarry5
+    // mov ULCARRY, 0
+    // checkifnocarry5:
 
     // ulSum += oAddend2->aulDigits[lIndex];
     // add x0, OADDEND2, AULDIGITS
@@ -208,67 +193,64 @@ BigInt_add:
     // lsl x1, x1, 3
     // add x0, x0, x1
     // ldr x0, [x0]
-    // add ULSUM, ULSUM, x0
+    // adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
+    // just checking what the c flag is rn
+    // bcc checkifnocarry4
+    // mov ULCARRY, 0
+    // checkifnocarry4:
 
-    // if (ulSum >= oAddend2->aulDigits[lIndex]) goto endif4;
-        // x0 is still oAddend2->aulDigits[lIndex]
-        // x2 is still ulSum
-    // TAKEN cmp ULSUM, x0
-    // TAKEN bhs endif4
+    //----- original longer verison of impl----------
 
-    //  ulCarry = 1;
-    // TAKEN mov ULCARRY, 1
 
-    // TAKEN endif4:
+    // ------ simplified implementation alt------
+    // ulSum += oAddend1->aulDigits[lIndex];
+    add x0, OADDEND1, AULDIGITS
+    mov x1, LINDEX
+    lsl x1, x1, 3
+    add x0, x0, x1
+    ldr x0, [x0]
 
-    // oSum->aulDigits[lIndex] = ulSum; - WON'T EVEN NEED ULSUM?
+
+    // ulSum += oAddend2->aulDigits[lIndex];
+    add x1, OADDEND2, AULDIGITS
+    mov x2, LINDEX
+    lsl x2, x2, 3
+    add x1, x1, x2
+    ldr x1, [x1]
+    adcs x2, x0, x1  // THIS WILL SET A NEW C TO KEEP
+
+    // -------- simplified implementation alt-------
+
+    // oSum->aulDigits[lIndex] = ulSum;
     mov x0, OSUM
     add x0, x0, AULDIGITS
     mov x1, LINDEX
     lsl x1, x1, 3
     add x0, x0, x1      // x0 is the address of oSum->aulDigits[lIndex]
-    str ULSUM, [x0]
+    // str ULSUM, [x0]
+    str x2, [x0]
 
     // lIndex++;
     add LINDEX, LINDEX, 1
 
+    bcc noCarryDetected
+    // if we detect a carry:
     //if (lIndex < lSumLength) goto loop1;
-    // SUBS WZR, Ws|WSP, imm
-    // SUBTRACT 0 - CARRY_FLAG
-    
-    // NEED TO WRITE COMPARE TWICE
-    // if C == 1: 
-        // cmp lindex, lsumlength
-        // if cmp true, c == 1 (fine, can GO TO GO BACK)
-        // else
-            // GO TO
-            // something that sets c = 1
-            // go to OUT OF LOOP
-    // else C == 0
-        // cmp lindex, lsumlength
-        // if cmp true, c == 1 (needs to GO BACK)
-            // GO TO
-            // something that sets c = 0
-            // go to loop
-        // else c == 0 (fine, GO TO GET OUT)
+    cmp LINDEX, LSUMLENGTH
+    blt loop1StartWithCarry  //HERE
+    b loop1EndWithCarry
+
+    noCarryDetected:
+    // if we did not detect a carry:
+    //if (lIndex < lSumLength) goto loop1;
+    cmp LINDEX, LSUMLENGTH
+    blt loop1StartNoCarry  //HERE
+    //b loop1EndNoCarry
+    b endif5  // directly to end w carry clear
 
 
-    // cmp LINDEX, LSUMLENGTH
 
-    // TRUE, had c = 1 (FINE)
-    // TRUE, had c =0
-    // FALSE, had c = 1
-    // FALSE, had c = 0 (FINE)
-
-    blt loop1
-
-    loop1End:
-
-    // if (ulCarry != 1) goto endif5;
-    // REALLY if C == 0 goto endif5
-    // TAKEN cmp ULCARRY, 1
-    // THE LAST COMPARE MESSED UP C == 1. RESTORE
-    bcc endif5
+    loop1EndWithCarry:
 
     // if (lSumLength != MAX_DIGITS) goto endif6;
     cmp LSUMLENGTH, MAX_DIGITS
@@ -305,7 +287,7 @@ BigInt_add:
     mov x2, LSUMLENGTH
     lsl x2, x2, 3
     add x1, x1, x2
-    mov x0, 1  // NOTE: is this necessary
+    mov x0, 1
     str x0, [x1]
 
     // lSumLength++;
