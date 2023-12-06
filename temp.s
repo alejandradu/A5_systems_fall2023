@@ -160,8 +160,6 @@ BigInt_add:
     add x0, x0, x1
     ldr x0, [x0]
 
-    adds x3, xzr, x0
-
     // ulSum += oAddend2->aulDigits[lIndex];
     // REALLY get the first value to add (logic same as in opt)
     add x1, OADDEND2, AULDIGITS
@@ -172,7 +170,7 @@ BigInt_add:
 
     // add with C flag, guaranteed to be right
     //adcs x2, x0, x1 
-    adcs x2, x3, x1
+    adcs x2, x0, x1
 
     // oSum->aulDigits[lIndex] = ulSum;
     mov x0, OSUM
@@ -186,21 +184,47 @@ BigInt_add:
     add LINDEX, LINDEX, 1
 
     // if no carry:
-    bcc noCarryDetected
-
+    // bcc noCarryDetected   H
+    // -------
     // if carry:
-    //if (lIndex < lSumLength) goto loop1;
-    cmp LINDEX, LSUMLENGTH
-    blt loop1StartWithCarry  
-    b loop1EndWithCarry
+    bcs carryDetected
 
-    noCarryDetected:
-    // if we did not detect a carry:
-    //if (lIndex < lSumLength) goto loop1;
+    // if no carry:
     cmp LINDEX, LSUMLENGTH
-    blt loop1StartNoCarry  //HERE
-    //b loop1EndNoCarry
-    b endif5  // directly to end w carry clear
+    bge endif5
+
+    // if (lIndex < lSumLength) goto loop1;
+    b loop1StartNoCarry
+
+    carryDetected:
+    // if (lIndex < lSumLength) goto loop1;
+    cmp LINDEX, LSUMLENGTH
+    bge loop1EndWithCarry
+
+    b loop1StartWithCarry
+
+    // if no carry:
+    //if (lIndex < lSumLength) goto loop1;
+    //cmp LINDEX, LSUMLENGTH
+   // bge endif5
+    // ------
+    //// if no carry:
+    //cmp LINDEX, LSUMLENGTH
+    //bge loop1EndNoCarry
+//
+    //// if carry:
+    ////if (lIndex < lSumLength) goto loop1;
+    //cmp LINDEX, LSUMLENGTH
+    //blt loop1StartWithCarry  
+    //b loop1EndWithCarry
+//
+    //noCarryDetected:
+    //// if we did not detect a carry:
+    ////if (lIndex < lSumLength) goto loop1;
+    //cmp LINDEX, LSUMLENGTH
+    //blt loop1StartNoCarry  //HERE
+    ////b loop1EndNoCarry
+    //b endif5  // directly to end w carry clear
 
 
 
