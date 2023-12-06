@@ -160,7 +160,7 @@ BigInt_add:
     add x0, x0, x1
     ldr x0, [x0]
 
-    adcs x3, xzr, x0
+    adds x3, xzr, x0
 
     // ulSum += oAddend2->aulDigits[lIndex];
     // REALLY get the first value to add (logic same as in opt)
