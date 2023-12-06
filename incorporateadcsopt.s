@@ -157,6 +157,20 @@ BigInt_add:
 
     //----- original longer verison of impl----------
 
+    // ulSum = ulCarry; 
+    // replaced by the below    mov ULSUM,  ULCARRY
+    //------ replacement start--------
+    // bcs: branch if there's unsigned overflow
+    bcs isOverflow
+    mov ULSUM, 0  // if the c flag is 0, set ulSum to 0,
+    b noOverflow
+
+    isOverflow:
+    mov ULSUM, 1  // if the c flag is 1, set ulSum to 1,
+    //------ replacement ends--------
+
+    noOverflow:
+
     // ulSum += oAddend1->aulDigits[lIndex];
     add x0, OADDEND1, AULDIGITS
     mov x1, LINDEX
@@ -164,7 +178,7 @@ BigInt_add:
     add x0, x0, x1
     ldr x0, [x0]
     // replaced by below  add ULSUM, ULSUM, x0
-    adcs ULSUM, ULSUM, x0 // now c flag has the information of overflow
+    adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
     // just checking what the c flag is rn
     bcc checkifnocarry5
     mov ULCARRY, 0
