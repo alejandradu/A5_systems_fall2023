@@ -208,7 +208,7 @@ BigInt_add:
     ldr x0, [x0]
 
 
-    ulSum += oAddend2->aulDigits[lIndex];
+    // ulSum += oAddend2->aulDigits[lIndex];
     add x1, OADDEND2, AULDIGITS
     mov x2, LINDEX
     lsl x2, x2, 3
