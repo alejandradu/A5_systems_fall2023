@@ -192,7 +192,7 @@ BigInt_add:
     // if no carry:
     cmp LINDEX, LSUMLENGTH
     //bge endif5
-    bhs endif5
+    bhi endif5
 
     // if (lIndex < lSumLength) goto loop1;
     b loop1StartNoCarry
@@ -201,7 +201,7 @@ BigInt_add:
     // if (lIndex < lSumLength) goto loop1;
     cmp LINDEX, LSUMLENGTH
     //bge loop1EndWithCarry
-    bhs loop1EndWithCarry
+    bhi loop1EndWithCarry
 
     b loop1StartWithCarry
 
