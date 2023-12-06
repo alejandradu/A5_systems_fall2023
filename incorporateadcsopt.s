@@ -161,60 +161,60 @@ BigInt_add:
     // replaced by the below    mov ULSUM,  ULCARRY
     //------ replacement start--------
     // bcs: branch if there's unsigned overflow
-    bcs isOverflow
-    mov ULSUM, 0  // if the c flag is 0, set ulSum to 0,
-    b noOverflow
+    // bcs isOverflow
+    // mov ULSUM, 0  // if the c flag is 0, set ulSum to 0,
+    // b noOverflow
 
-    isOverflow:
-    mov ULSUM, 1  // if the c flag is 1, set ulSum to 1,
+    // isOverflow:
+    // mov ULSUM, 1  // if the c flag is 1, set ulSum to 1,
     //------ replacement ends--------
 
-    noOverflow:
+    // noOverflow:
 
-    // ulSum += oAddend1->aulDigits[lIndex];
-    add x0, OADDEND1, AULDIGITS
-    mov x1, LINDEX
-    lsl x1, x1, 3
-    add x0, x0, x1
-    ldr x0, [x0]
-    // replaced by below  add ULSUM, ULSUM, x0
-    adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
-    // just checking what the c flag is rn
-    bcc checkifnocarry5
-    mov ULCARRY, 0
-    checkifnocarry5:
-
-    // ulSum += oAddend2->aulDigits[lIndex];
-    add x0, OADDEND2, AULDIGITS
-    mov x1, LINDEX
-    lsl x1, x1, 3
-    add x0, x0, x1
-    ldr x0, [x0]
-    adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
-    // just checking what the c flag is rn
-    bcc checkifnocarry4
-    mov ULCARRY, 0
-    checkifnocarry4:
-
-    //----- original longer verison of impl----------
-
-
-    // ------ simplified implementation alt------
     // ulSum += oAddend1->aulDigits[lIndex];
     // add x0, OADDEND1, AULDIGITS
     // mov x1, LINDEX
     // lsl x1, x1, 3
     // add x0, x0, x1
     // ldr x0, [x0]
-
+    // replaced by below  add ULSUM, ULSUM, x0
+    // adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
+    // just checking what the c flag is rn
+    // bcc checkifnocarry5
+    // mov ULCARRY, 0
+    // checkifnocarry5:
 
     // ulSum += oAddend2->aulDigits[lIndex];
-    // add x1, OADDEND2, AULDIGITS
-    // mov x2, LINDEX
-    // lsl x2, x2, 3
-    // add x1, x1, x2
-    // ldr x1, [x1]
-    // adcs x2, x0, x1  // THIS WILL SET A NEW C TO KEEP
+    // add x0, OADDEND2, AULDIGITS
+    // mov x1, LINDEX
+    // lsl x1, x1, 3
+    // add x0, x0, x1
+    // ldr x0, [x0]
+    // adds ULSUM, ULSUM, x0 // now c flag has the information of overflow
+    // just checking what the c flag is rn
+    // bcc checkifnocarry4
+    // mov ULCARRY, 0
+    // checkifnocarry4:
+
+    //----- original longer verison of impl----------
+
+
+    // ------ simplified implementation alt------
+    // ulSum += oAddend1->aulDigits[lIndex];
+    add x0, OADDEND1, AULDIGITS
+    mov x1, LINDEX
+    lsl x1, x1, 3
+    add x0, x0, x1
+    ldr x0, [x0]
+
+
+    ulSum += oAddend2->aulDigits[lIndex];
+    add x1, OADDEND2, AULDIGITS
+    mov x2, LINDEX
+    lsl x2, x2, 3
+    add x1, x1, x2
+    ldr x1, [x1]
+    adcs x2, x0, x1  // THIS WILL SET A NEW C TO KEEP
 
     // -------- simplified implementation alt-------
 
